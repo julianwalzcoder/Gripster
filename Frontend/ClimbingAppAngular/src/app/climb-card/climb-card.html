@@ -1,0 +1,13 @@
+<div class="climb-card">
+  <div class="climb-info">
+    <p><strong>Climb #</strong> <span>{{ climb.id }}</span></p>
+    <p><strong>Grade ID</strong> <span>{{ climb.gradeID }}</span></p>
+    <p><strong>Set Date</strong> <span>{{ climb.setDate | date: 'mediumDate' }}</span></p>
+    <p *ngIf="climb.removeDate"><strong>Remove Date</strong> <span>{{ climb.removeDate | date: 'mediumDate' }}</span></p>
+</div>
+    <tr>
+        <td><button (click)="deleteClimb()">Delete</button></td>
+        <td><button (click)="editClimb(climb.id)">Edit</button></td>
+
+    </tr>
+</div>
