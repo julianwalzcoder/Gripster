@@ -19,8 +19,7 @@ namespace ClimbingApp.Model.Repositories
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT userid, routeid, gradefbleau, status FROM UserRouteGradeView";
-                
+                cmd.CommandText = "SELECT * FROM UserRouteGradeView";
                 var data = GetData(dbConn, cmd);
                 if (data != null)
                 {
@@ -28,7 +27,7 @@ namespace ClimbingApp.Model.Repositories
                     {
                         userSessions.Add(new UserSession
                         {
-                            UserID = Convert.ToInt32(data["userid"]),
+                            UserID = data["userid"] == DBNull.Value ? (int?)null : Convert.ToInt32(data["userid"]),
                             RouteID = Convert.ToInt32(data["routeid"]),
                             GradeFbleau = data["gradefbleau"].ToString(),
                             Status = data["status"].ToString()
@@ -50,7 +49,7 @@ namespace ClimbingApp.Model.Repositories
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT userid, routeid, gradefbleau, status FROM UserRouteGradeView WHERE userid = @userId AND routeid = @routeId";
+                cmd.CommandText = "SELECT * FROM UserRouteGradeView WHERE userid = @userId AND routeid = @routeId";
                 cmd.Parameters.Add("@userId", NpgsqlDbType.Integer).Value = userId;
                 cmd.Parameters.Add("@routeId", NpgsqlDbType.Integer).Value = routeId;
                 
@@ -84,7 +83,7 @@ namespace ClimbingApp.Model.Repositories
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT userid, routeid, gradefbleau, status FROM UserRouteGradeView WHERE userid = @userId";
+                cmd.CommandText = "SELECT * FROM UserRouteGradeView WHERE userid = @userId";
                 cmd.Parameters.Add("@userId", NpgsqlDbType.Integer).Value = userId;
                 
                 var data = GetData(dbConn, cmd);
@@ -94,7 +93,7 @@ namespace ClimbingApp.Model.Repositories
                     {
                         userSessions.Add(new UserSession
                         {
-                            UserID = Convert.ToInt32(data["userid"]),
+                            UserID = data["userid"] == DBNull.Value ? null : Convert.ToInt32(data["userid"]),
                             RouteID = Convert.ToInt32(data["routeid"]),
                             GradeFbleau = data["gradefbleau"].ToString(),
                             Status = data["status"].ToString()
@@ -117,7 +116,7 @@ namespace ClimbingApp.Model.Repositories
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT userid, routeid, gradefbleau, status FROM UserRouteGradeView WHERE userid = @userId AND routeid = @routeId";
+                cmd.CommandText = "SELECT * FROM UserRouteGradeView WHERE userid = @userId AND routeid = @routeId";
                 cmd.Parameters.Add("@userId", NpgsqlDbType.Integer).Value = userId;
                 cmd.Parameters.Add("@routeId", NpgsqlDbType.Integer).Value = routeId;
                 
@@ -128,7 +127,7 @@ namespace ClimbingApp.Model.Repositories
                     {
                         userSessions.Add(new UserSession
                         {
-                            UserID = Convert.ToInt32(data["userid"]),
+                            UserID = data["userid"] == DBNull.Value ? null : Convert.ToInt32(data["userid"]),
                             RouteID = Convert.ToInt32(data["routeid"]),
                             GradeFbleau = data["gradefbleau"].ToString(),
                             Status = data["status"].ToString()
@@ -151,7 +150,16 @@ namespace ClimbingApp.Model.Repositories
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
                 cmd.CommandText = "INSERT INTO UserRouteGradeView (userid, routeid, gradefbleau, status) VALUES (@userId, @routeId, @gradeFbleau, @status)";
-                cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userSession.UserID);
+                
+                if (userSession.UserID.HasValue)
+                {
+                    cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userSession.UserID.Value);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@userId", DBNull.Value);
+                }
+                
                 cmd.Parameters.AddWithValue("@routeId", NpgsqlDbType.Integer, userSession.RouteID);
                 cmd.Parameters.AddWithValue("@gradeFbleau", NpgsqlDbType.Varchar, userSession.GradeFbleau);
                 cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Varchar, userSession.Status);
@@ -170,7 +178,16 @@ namespace ClimbingApp.Model.Repositories
             var dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
             cmd.CommandText = "UPDATE UserRouteGradeView SET gradefbleau = @gradeFbleau, status = @status WHERE userid = @userId AND routeid = @routeId";
-            cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userSession.UserID);
+            
+            if (userSession.UserID.HasValue)
+            {
+                cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userSession.UserID.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@userId", DBNull.Value);
+            }
+            
             cmd.Parameters.AddWithValue("@routeId", NpgsqlDbType.Integer, userSession.RouteID);
             cmd.Parameters.AddWithValue("@gradeFbleau", NpgsqlDbType.Varchar, userSession.GradeFbleau);
             cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Varchar, userSession.Status);

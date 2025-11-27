@@ -19,6 +19,9 @@ export class ClimbCard {
   @Input() climb!: Climb;
   @Output() delete = new EventEmitter<number>();
 
+  // Default user ID (should be replaced with auth service)
+  private readonly defaultUserId = 1;
+
   deleteClimb() {
     if (this.climb) {
       this.delete.emit(this.climb.routeId);
@@ -37,7 +40,8 @@ export class ClimbCard {
     );
   }
 
-  updateClimbStatus(userId: number, routeId: number, status: string): void {
+  updateClimbStatus(routeId: number, status: string): void {
+    const userId = this.climb.userId ?? this.defaultUserId;
     console.log('Update status clicked:', userId, routeId, status);
     this.climbService.updateClimbStatus(userId, routeId, status).subscribe({
       next: () => {

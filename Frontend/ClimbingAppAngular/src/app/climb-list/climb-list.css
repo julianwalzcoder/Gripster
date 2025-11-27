@@ -1,7 +1,7 @@
 .climb-list-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 20px;
 }
 
 h2 {
@@ -41,7 +41,129 @@ h2 {
     grid-template-columns: 1fr;
   }
   
+  .climbs-grid {
+    grid-template-columns: 1fr;
+  }
+  
   .climb-list-container {
     padding: 1rem;
+  }
+}
+
+.filter-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-section h2 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #555;
+}
+
+.filter-select {
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-select:hover {
+  border-color: #667eea;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.reset-btn {
+  padding: 10px 20px;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.results-count {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.climbs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  color: #666;
+}
+
+.no-results p {
+  font-size: 16px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .reset-btn {
+    width: 100%;
+  }
+
+  .climbs-grid {
+    grid-template-columns: 1fr;
   }
 }

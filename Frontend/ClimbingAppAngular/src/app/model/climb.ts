@@ -7,7 +7,7 @@
 //   adminID: number;
 // }
 export interface Climb {
-  userId: number;
+  userId?: number;
   routeId: number;
   grade: string;
   status: string;

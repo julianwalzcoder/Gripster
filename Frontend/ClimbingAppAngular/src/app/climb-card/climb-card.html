@@ -8,8 +8,8 @@
   </a>
   <div class="climb-actions">
     <button (click)="deleteClimb(); $event.stopPropagation()">Delete</button>
-    <button (click)="updateClimbStatus(climb.userId, climb.routeId, 'Top'); $event.stopPropagation()">Top</button>
-    <button (click)="updateClimbStatus(climb.userId, climb.routeId, 'Attempted'); $event.stopPropagation()">Attempted</button>
-    <button (click)="updateClimbStatus(climb.userId, climb.routeId, 'Flash'); $event.stopPropagation()">Flash</button>
+    <button (click)="updateClimbStatus(climb.routeId, 'Top'); $event.stopPropagation()">Top</button>
+    <button (click)="updateClimbStatus(climb.routeId, 'Attempted'); $event.stopPropagation()">Attempted</button>
+    <button (click)="updateClimbStatus(climb.routeId, 'Flash'); $event.stopPropagation()">Flash</button>
   </div>
 </div>

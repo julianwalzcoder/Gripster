@@ -1,9 +1,50 @@
 <div class="climb-list-container">
-  <h2>Climbs</h2>
-  <div *ngIf="loading">Loading climbs...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
-  <div *ngIf="!loading && climbs.length === 0">No climbs found.</div>
-  <div class="climb-grid" *ngIf="!loading && climbs.length > 0">
-    <app-climb-card *ngFor="let climb of climbs" [climb]="climb" (delete)="onDeleteClimb($event)"></app-climb-card>
+  <div class="filter-section">
+    <h2>Filter Climbs</h2>
+    <div class="filters">
+      <div class="filter-group">
+        <label for="status-filter">Status:</label>
+        <select 
+          id="status-filter" 
+          [(ngModel)]="selectedStatus" 
+          (change)="onStatusChange()"
+          class="filter-select">
+          <option *ngFor="let status of availableStatuses" [value]="status">
+            {{ status === 'all' ? 'All Statuses' : status }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="grade-filter">Grade:</label>
+        <select 
+          id="grade-filter" 
+          [(ngModel)]="selectedGrade" 
+          (change)="onGradeChange()"
+          class="filter-select">
+          <option *ngFor="let grade of availableGrades" [value]="grade">
+            {{ grade === 'all' ? 'All Grades' : grade }}
+          </option>
+        </select>
+      </div>
+
+      <button (click)="resetFilters()" class="reset-btn">Reset Filters</button>
+    </div>
+
+    <div class="results-count">
+      Showing {{ filteredClimbs.length }} of {{ climbs.length }} climbs
+    </div>
+  </div>
+
+  <div class="climbs-grid">
+    <app-climb-card 
+      *ngFor="let climb of filteredClimbs" 
+      [climb]="climb"
+      (delete)="onDeleteClimb($event)">
+    </app-climb-card>
+  </div>
+
+  <div *ngIf="filteredClimbs.length === 0" class="no-results">
+    <p>No climbs match your filters.</p>
   </div>
 </div>

@@ -17,6 +17,9 @@ export class ClimbDetailComponent implements OnInit {
   loading = true;
   error: string | null = null;
   
+  // Default user ID (should be replaced with auth service)
+  private readonly defaultUserId = 1;
+  
   constructor(
     private climbService: ClimbService,
     private route: ActivatedRoute,
@@ -64,5 +67,20 @@ export class ClimbDetailComponent implements OnInit {
         }
       });
     }
+  }
+
+  updateClimbStatus(userId: number, routeId: number, status: string): void {
+    const effectiveUserId = this.climb.userId ?? this.defaultUserId;
+    console.log('Update status clicked:', effectiveUserId, routeId, status);
+    this.climbService.updateClimbStatus(effectiveUserId, routeId, status).subscribe({
+      next: () => {
+        console.log('Status updated successfully');
+        this.climb.status = status;
+      },
+      error: (err: any) => {
+        console.error('Error updating status:', err);
+        alert('Failed to update climb status. ' + err.message);
+      }
+    });
   }
 }

@@ -56,10 +56,13 @@ namespace ClimbingApp.API.Controllers
                 return BadRequest("UserSession info not correct");
             }
             
-            var user = UserRepository.GetUserById(userSession.UserID);
-            if (user == null)
+            if (userSession.UserID.HasValue)
             {
-                return BadRequest($"User with ID {userSession.UserID} does not exist");
+                var user = UserRepository.GetUserById(userSession.UserID.Value);
+                if (user == null)
+                {
+                    return BadRequest($"User with ID {userSession.UserID} does not exist");
+                }
             }
             
             var route = ClimbRepository.GetRouteById(userSession.RouteID);
