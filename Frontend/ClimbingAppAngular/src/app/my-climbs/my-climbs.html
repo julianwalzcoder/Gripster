@@ -1,0 +1,26 @@
+<div class="climb-list-container">
+  <div class="filter-section mat-elevation-z2">
+    <h2><mat-icon>person</mat-icon> My Climbs</h2>
+    <p class="subtitle">View all your completed and attempted climbs</p>
+    
+    
+
+  <div class="climbs-grid">
+    <app-climb-card 
+      *ngFor="let climb of filteredClimbs" 
+      [climb]="climb"
+      (delete)="onDeleteClimb($event)">
+    </app-climb-card>
+  </div>
+
+  <div *ngIf="filteredClimbs.length === 0 && climbs.length === 0" class="no-results mat-elevation-z1">
+    <mat-icon>sentiment_satisfied</mat-icon>
+    <p>You haven't logged any climbs yet!</p>
+    <p class="hint">Start climbing and marking your progress.</p>
+  </div>
+
+  <div *ngIf="filteredClimbs.length === 0 && climbs.length > 0" class="no-results mat-elevation-z1">
+    <mat-icon>search_off</mat-icon>
+    <p>No climbs match your filters.</p>
+  </div>
+</div>
