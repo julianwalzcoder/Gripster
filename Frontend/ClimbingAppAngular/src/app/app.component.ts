@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth-service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,11 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  constructor(public auth: AuthService) {}
+
+  logout() {
+    this.auth.logout();
+  }
   title = 'Gripster';
   sidenavOpened = false;
 

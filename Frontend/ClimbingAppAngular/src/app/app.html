@@ -8,5 +8,8 @@
     <button routerLink="/my-projects" mat-menu-item>My Projects</button>
   </mat-menu>
   <span>Gripster</span>
+  <span class="spacer"></span>
+<button *ngIf="!(auth.isLoggedIn$ | async)" routerLink="/login" mat-button>Login</button>
+<button *ngIf="(auth.isLoggedIn$ | async)" (click)="logout()" mat-button>Logout</button>
 </mat-toolbar>
 <router-outlet />
