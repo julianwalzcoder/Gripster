@@ -2,11 +2,14 @@ using ClimbingApp.Model.Entities;
 using ClimbingApp.Model.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace ClimbingApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GymController : ControllerBase
     {
         protected GymRepository Repository { get; }

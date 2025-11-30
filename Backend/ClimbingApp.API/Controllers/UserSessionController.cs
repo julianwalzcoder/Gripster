@@ -1,11 +1,14 @@
 using ClimbingApp.Model.Entities;
 using ClimbingApp.Model.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace ClimbingApp.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class UserSessionController : ControllerBase
     {
         protected UserSessionRepository Repository { get; }

@@ -2,11 +2,15 @@ using ClimbingApp.Model.Entities;
 using ClimbingApp.Model.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace ClimbingApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+    [Authorize]
     public class UserController : ControllerBase
     {
         protected UserRepository Repository { get; }

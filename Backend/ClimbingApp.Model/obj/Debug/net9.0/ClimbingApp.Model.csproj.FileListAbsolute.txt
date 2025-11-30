@@ -47,3 +47,16 @@
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/refint/ClimbingApp.Model.dll
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.pdb
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ref/ClimbingApp.Model.dll
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/bin/Debug/net9.0/ClimbingApp.Model.deps.json
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/bin/Debug/net9.0/ClimbingApp.Model.dll
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/bin/Debug/net9.0/ClimbingApp.Model.pdb
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.csproj.AssemblyReference.cache
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.GeneratedMSBuildEditorConfig.editorconfig
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.AssemblyInfoInputs.cache
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.AssemblyInfo.cs
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.csproj.CoreCompileInputs.cache
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.sourcelink.json
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.dll
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/refint/ClimbingApp.Model.dll
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ClimbingApp.Model.pdb
+/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/Debug/net9.0/ref/ClimbingApp.Model.dll
