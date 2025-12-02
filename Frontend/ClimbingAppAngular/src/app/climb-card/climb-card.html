@@ -20,6 +20,12 @@
         </mat-chip>
       </mat-chip-set>
     </div>
+    <div class="avg-rating" *ngIf="avgRating !== undefined; else noAvg">
+      Average: {{ avgRating | number:'1.2-2' }}
+    </div>
+    <ng-template #noAvg>
+      <div class="avg-rating">Average: –</div>
+    </ng-template>
   </mat-card-content>
   
   <mat-card-actions>

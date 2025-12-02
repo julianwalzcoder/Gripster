@@ -27,6 +27,20 @@ export class ClimbCard {
   // Default user ID (should be replaced with auth service)
   private readonly defaultUserId = 1;
 
+  avgRating?: number; // Durchschnitt für diese Route
+
+  ngOnInit(): void {
+    if (this.climb?.routeId) {
+      this.climbService.getAverageRating(this.climb.routeId).subscribe({
+        next: (avg: number | null) => this.avgRating = avg ?? undefined,
+        error: (err) => {
+          console.error('Failed to load average rating', err);
+          this.avgRating = undefined;
+        }
+      });
+    }
+  }
+
   deleteClimb() {
     if (this.climb) {
       this.delete.emit(this.climb.routeId);

@@ -33,6 +33,10 @@ export class ClimbService {
     );
   }
 
+  getAverageRating(routeId: number): Observable<number | null> {
+    return this.http.get<number | null>('http://localhost:5098/api/ClimbingRoute/average-rating/' + routeId);
+  }
+
   getClimb(id: number): Observable<Climb> {
     return this.http.get<any[]>(`${this.baseUrl}/usersession`).pipe(
       map(sessions => {

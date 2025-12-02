@@ -17,19 +17,22 @@ public class SessionRouteRepository : BaseRepository
         {
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "select \"SessionID\",\"RouteID\",\"Tries\" from \"SessionRoute\" where \"SessionID\" = @sessionid AND \"RouteID\" = @routeid";
+            cmd.CommandText = "select * from \"SessionRoute\" where \"SessionID\" = @sessionid AND \"RouteID\" = @routeid";
             cmd.Parameters.Add("@sessionid", NpgsqlDbType.Integer).Value = sessionId;
             cmd.Parameters.Add("@routeid", NpgsqlDbType.Integer).Value = routeId;
             
             var data = GetData(dbConn, cmd);
-            if (data != null && data.Read())
+            if (data != null)
             {
-                return new SessionRoute
+                if (data.Read())
                 {
-                    SessionID = Convert.ToInt32(data["SessionID"]),
-                    RouteID = Convert.ToInt32(data["RouteID"]),
-                    Tries = Convert.ToInt32(data["Tries"])
-                };
+                    return new SessionRoute
+                    {
+                        SessionID = Convert.ToInt32(data["SessionID"]),
+                        RouteID = Convert.ToInt32(data["RouteID"]),
+                        Tries = Convert.ToInt32(data["Tries"]),
+                    };
+                }
             }
             return null;
         }
@@ -47,7 +50,7 @@ public class SessionRouteRepository : BaseRepository
         {
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "select \"SessionID\",\"RouteID\",\"Tries\" from \"SessionRoute\"";
+            cmd.CommandText = "select * from \"SessionRoute\"";
             
             var data = GetData(dbConn, cmd);
             if (data != null)
@@ -58,7 +61,7 @@ public class SessionRouteRepository : BaseRepository
                     {
                         SessionID = Convert.ToInt32(data["SessionID"]),
                         RouteID = Convert.ToInt32(data["RouteID"]),
-                        Tries = Convert.ToInt32(data["Tries"])
+                        Tries = Convert.ToInt32(data["Tries"]),
                     };
                     sessionRoutes.Add(sr);
                 }

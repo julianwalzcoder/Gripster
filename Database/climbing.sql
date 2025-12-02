@@ -205,8 +205,7 @@ ALTER TABLE public."Session" OWNER TO postgres;
 CREATE TABLE public."SessionRoute" (
     "SessionID" integer NOT NULL,
     "RouteID" integer NOT NULL,
-    "Tries" integer,
-    "Rating" integer
+    "Tries" integer
 );
 
 
@@ -261,7 +260,8 @@ ALTER TABLE public."User" OWNER TO postgres;
 CREATE TABLE public."UserRoute" (
     "UserID" integer NOT NULL,
     "RouteID" integer NOT NULL,
-    "Status" character varying(10)
+    "Status" character varying(10),
+    "Rating" integer
 );
 
 
@@ -445,9 +445,9 @@ COPY public."Session" ("ID", "UserID", "CustomName", "Date", "Feedback") FROM st
 -- Data for Name: SessionRoute; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."SessionRoute" ("SessionID", "RouteID", "Tries", "Rating") FROM stdin;
-4	7	4	5
-5	8	1	5
+COPY public."SessionRoute" ("SessionID", "RouteID", "Tries") FROM stdin;
+4	7	4
+5	8	1
 \.
 
 
@@ -471,19 +471,19 @@ COPY public."User" ("ID", "Name", "Username", "Mail", "PasswordHash", "Street", 
 -- Data for Name: UserRoute; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."UserRoute" ("UserID", "RouteID", "Status") FROM stdin;
-1	15	Flash
-1	28	Attempted
-4	5	Attempted
-1	13	Top
-1	9	Top
-1	4	Attempted
-4	4	Attempted
-1	7	Attempted
-1	10	Top
-1	14	Top
-1	12	Top
-1	8	Attempted
+COPY public."UserRoute" ("UserID", "RouteID", "Status", "Rating") FROM stdin;
+1	15	Flash	5
+1	28	Attempted	\N
+4	5	Attempted	3
+1	13	Top	4
+1	9	Top	5
+1	4	Attempted	2
+4	4	Attempted	\N
+1	7	Attempted	1
+1	10	Top	5
+1	14	Top	4
+1	12	Top	5
+1	8	Attempted	2
 \.
 
 
@@ -695,6 +695,18 @@ ALTER TABLE ONLY public."UserRoute"
 
 ALTER TABLE ONLY public."UserRoute"
     ADD CONSTRAINT "UserRoute_UserID_fkey" FOREIGN KEY ("UserID") REFERENCES public."User"("ID") ON DELETE CASCADE;
+
+
+--
+-- Constraints aktualisieren
+--
+
+ALTER TABLE ONLY public."UserRoute"
+    DROP CONSTRAINT IF EXISTS userroute_rating_range;
+
+ALTER TABLE ONLY public."UserRoute"
+    ADD CONSTRAINT userroute_rating_range
+    CHECK ("Rating" IS NULL OR ("Rating" BETWEEN 1 AND 5));
 
 
 --

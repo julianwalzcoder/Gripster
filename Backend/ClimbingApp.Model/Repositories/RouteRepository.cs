@@ -142,4 +142,23 @@ where ""ID"" = @id
         bool result = DeleteData(dbConn, cmd);
         return result;
     }
+
+    public decimal? GetAverageRatingForRoute(int routeId)
+    {
+        using var dbConn = new NpgsqlConnection(ConnectionString);
+        var cmd = dbConn.CreateCommand();
+        cmd.CommandText = @"
+SELECT AVG(""Rating"")
+FROM ""UserRoute""
+WHERE ""RouteID"" = @routeid AND ""Rating"" BETWEEN 1 AND 5";
+        cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, routeId);
+
+        var reader = GetData(dbConn, cmd);
+        if (reader != null && reader.Read() && !reader.IsDBNull(0))
+        {
+            var avg = reader.GetDouble(0);
+            return Convert.ToDecimal(avg);
+        }
+        return null;
+    }
 }

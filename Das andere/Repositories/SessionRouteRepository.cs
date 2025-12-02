@@ -17,19 +17,22 @@ public class SessionRouteRepository : BaseRepository
         {
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "select \"SessionID\",\"RouteID\",\"Tries\" from \"SessionRoute\" where \"SessionID\" = @sessionid AND \"RouteID\" = @routeid";
+            cmd.CommandText = "select * from \"SessionRoute\" where \"SessionID\" = @sessionid AND \"RouteID\" = @routeid";
             cmd.Parameters.Add("@sessionid", NpgsqlDbType.Integer).Value = sessionId;
             cmd.Parameters.Add("@routeid", NpgsqlDbType.Integer).Value = routeId;
             
             var data = GetData(dbConn, cmd);
-            if (data != null && data.Read())
+            if (data != null)
             {
-                return new SessionRoute
+                if (data.Read())
                 {
-                    SessionID = Convert.ToInt32(data["SessionID"]),
-                    RouteID = Convert.ToInt32(data["RouteID"]),
-                    Tries = Convert.ToInt32(data["Tries"])
-                };
+                    return new SessionRoute
+                    {
+                        SessionID = Convert.ToInt32(data["SessionID"]),
+                        RouteID = Convert.ToInt32(data["RouteID"]),
+                        Tries = Convert.ToInt32(data["Tries"]),
+                    };
+                }
             }
             return null;
         }
@@ -47,7 +50,7 @@ public class SessionRouteRepository : BaseRepository
         {
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "select \"SessionID\",\"RouteID\",\"Tries\" from \"SessionRoute\"";
+            cmd.CommandText = "select * from \"SessionRoute\"";
             
             var data = GetData(dbConn, cmd);
             if (data != null)
@@ -58,7 +61,7 @@ public class SessionRouteRepository : BaseRepository
                     {
                         SessionID = Convert.ToInt32(data["SessionID"]),
                         RouteID = Convert.ToInt32(data["RouteID"]),
-                        Tries = Convert.ToInt32(data["Tries"])
+                        Tries = Convert.ToInt32(data["Tries"]),
                     };
                     sessionRoutes.Add(sr);
                 }
@@ -79,53 +82,37 @@ public class SessionRouteRepository : BaseRepository
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
             cmd.CommandText = @"
-insert into ""SessionRoute""
-(""SessionID"", ""RouteID"", ""Tries"")
-values
-(@sessionid, @routeid, @tries)
-";
+INSERT INTO ""SessionRoute"" (""SessionID"", ""RouteID"", ""Tries"")
+VALUES (@sessionid, @routeid, @tries)";
             cmd.Parameters.AddWithValue("@sessionid", NpgsqlDbType.Integer, sr.SessionID);
             cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, sr.RouteID);
             cmd.Parameters.AddWithValue("@tries", NpgsqlDbType.Integer, sr.Tries);
-            
-            bool result = InsertData(dbConn, cmd);
-            return result;
+            return InsertData(dbConn, cmd);
         }
-        finally
-        {
-            dbConn?.Close();
-        }
+        finally { dbConn?.Close(); }
     }
     
     public bool UpdateSessionRoute(SessionRoute sr)
     {
-        var dbConn = new NpgsqlConnection(ConnectionString);
+        using var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
         cmd.CommandText = @"
-update ""SessionRoute"" set
-""Tries""=@tries
-where
-""SessionID"" = @sessionid AND ""RouteID"" = @routeid";
+UPDATE ""SessionRoute""
+SET ""Tries"" = @tries
+WHERE ""SessionID"" = @sessionid AND ""RouteID"" = @routeid";
         cmd.Parameters.AddWithValue("@tries", NpgsqlDbType.Integer, sr.Tries);
         cmd.Parameters.AddWithValue("@sessionid", NpgsqlDbType.Integer, sr.SessionID);
         cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, sr.RouteID);
-        
-        bool result = UpdateData(dbConn, cmd);
-        return result;
+        return UpdateData(dbConn, cmd);
     }
     
     public bool DeleteSessionRoute(int sessionId, int routeId)
     {
-        var dbConn = new NpgsqlConnection(ConnectionString);
+        using var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
-        cmd.CommandText = @"
-delete from ""SessionRoute""
-where ""SessionID"" = @sessionid AND ""RouteID"" = @routeid
-";
+        cmd.CommandText = @"DELETE FROM ""SessionRoute"" WHERE ""SessionID""=@sessionid AND ""RouteID""=@routeid";
         cmd.Parameters.AddWithValue("@sessionid", NpgsqlDbType.Integer, sessionId);
         cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, routeId);
-        
-        bool result = DeleteData(dbConn, cmd);
-        return result;
+        return DeleteData(dbConn, cmd);
     }
 }

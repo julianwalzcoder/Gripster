@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-
 namespace ClimbingApp.API.Controllers
 {
     [Route("api/[controller]")]
@@ -84,6 +83,14 @@ namespace ClimbingApp.API.Controllers
                 return NoContent();
             }
             return BadRequest($"Unable to delete route with id {id}");
+        }
+
+        [AllowAnonymous]
+        [HttpGet("average-rating/{routeId}")]
+        public ActionResult<decimal?> GetAverageRating([FromRoute] int routeId, [FromServices] ClimbRepository climbRepository)
+        {
+            var avg = climbRepository.GetAverageRatingForRoute(routeId);
+            return Ok(avg);
         }
     }
 }

@@ -225,3 +225,12 @@
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/obj/Debug/net9.0/ClimbingApp.API.sourcelink.json

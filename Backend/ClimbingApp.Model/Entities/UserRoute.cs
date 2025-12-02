@@ -18,6 +18,10 @@ namespace ClimbingApp.Model.Entities
         [MaxLength(50)]
         public string Status { get; set; }
 
+        // Neues Rating-Feld (optional, 1–5)
+        [Range(1, 5)]
+        public int? Rating { get; set; }
+
         [ForeignKey("UserID")]
         public virtual User User { get; set; }
 
