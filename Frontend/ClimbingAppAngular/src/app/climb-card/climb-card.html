@@ -26,6 +26,14 @@
     <ng-template #noAvg>
       <div class="avg-rating">Average: –</div>
     </ng-template>
+
+    <!-- User Rating: klickbare Sterne -->
+    <div class="user-rating" *ngIf="climb?.userId">
+      <span>User Rating:</span>
+      <button mat-icon-button *ngFor="let s of [1,2,3,4,5]" (click)="rateClimb(s); $event.stopPropagation()">
+        <mat-icon [class.filled]="(userRating ?? 0) >= s">star</mat-icon>
+      </button>
+    </div>
   </mat-card-content>
   
   <mat-card-actions>

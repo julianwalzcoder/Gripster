@@ -28,16 +28,21 @@ export class ClimbCard {
   private readonly defaultUserId = 1;
 
   avgRating?: number; // Durchschnitt für diese Route
+  userRating?: number; // aktuelle Bewertung des Users
 
   ngOnInit(): void {
     if (this.climb?.routeId) {
       this.climbService.getAverageRating(this.climb.routeId).subscribe({
         next: (avg: number | null) => this.avgRating = avg ?? undefined,
-        error: (err) => {
-          console.error('Failed to load average rating', err);
-          this.avgRating = undefined;
-        }
+        error: () => this.avgRating = undefined
       });
+      // User-Rating laden
+      if (this.climb.userId) {
+        this.climbService.getUserRating(this.climb.userId, this.climb.routeId).subscribe({
+          next: (rating: number | null) => this.userRating = rating ?? undefined,
+          error: () => this.userRating = undefined
+        });
+      }
     }
   }
 
@@ -70,6 +75,22 @@ export class ClimbCard {
       error: (err: any) => {
         console.error('Error updating status:', err);
         alert('Failed to update climb status. ' + err.message);
+      }
+    });
+  }
+
+  rateClimb(rating: number): void {
+    const userId = this.climb.userId;
+    if (!userId) { alert('Bitte einloggen'); return; }
+    this.userRating = rating; // sofortiges UI-Feedback
+    this.climbService.setRating(userId, this.climb.routeId, rating).subscribe({
+      next: () => {
+        // Durchschnitt optional neu laden
+        this.climbService.getAverageRating(this.climb.routeId).subscribe(avg => this.avgRating = avg ?? undefined);
+      },
+      error: (err) => {
+        console.error('Rating failed', err);
+        alert('Raiting failed');
       }
     });
   }

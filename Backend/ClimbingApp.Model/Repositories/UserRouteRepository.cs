@@ -226,4 +226,19 @@ where ""UserID"" = @userid AND ""RouteID"" = @routeid
         bool result = DeleteData(dbConn, cmd);
         return result;
     }
+
+    public bool UpsertRating(int userId, int routeId, int? rating)
+    {
+        using var dbConn = new NpgsqlConnection(ConnectionString);
+        var cmd = dbConn.CreateCommand();
+        cmd.CommandText = @"
+INSERT INTO ""UserRoute"" (""UserID"", ""RouteID"", ""Rating"")
+VALUES (@userid, @routeid, @rating)
+ON CONFLICT (""UserID"", ""RouteID"")
+DO UPDATE SET ""Rating"" = EXCLUDED.""Rating""";
+        cmd.Parameters.AddWithValue("@userid", NpgsqlDbType.Integer, userId);
+        cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, routeId);
+        cmd.Parameters.AddWithValue("@rating", rating is null ? (object)DBNull.Value : rating);
+        return InsertData(dbConn, cmd);
+    }
 }

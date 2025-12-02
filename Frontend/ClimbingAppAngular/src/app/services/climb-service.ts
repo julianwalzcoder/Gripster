@@ -80,4 +80,16 @@ export class ClimbService {
   addClimb(climb: Climb): Observable<any> {
     return this.http.post(`${this.baseUrl}/climb`, climb);
   }
+
+  setRating(userId: number, routeId: number, rating: number | null) {
+    return this.http.post<void>(
+      `http://localhost:5098/UserRoute/${userId}/${routeId}/rating`,
+      rating,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  getUserRating(userId: number, routeId: number): Observable<number | null> {
+    return this.http.get<number | null>(`http://localhost:5098/UserRoute/${userId}/${routeId}/rating`);
+  }
 }

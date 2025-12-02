@@ -169,14 +169,27 @@ mat-icon {
   vertical-align: middle;
   margin-right: 4px;
 }
-  /* flex: 0;
-  min-width: 48px !important;
-} */
+
+.user-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.user-rating mat-icon {
+  color: #ccc;
+}
+
+.user-rating mat-icon.filled {
+  color: #ffb300;
+}
 
 mat-icon {
   vertical-align: middle;
   margin-right: 4px;
 }
+
 mat-card-actions button[color="warn"] mat-icon {
   color: rgba(0, 0, 0, 0.87) !important;
 }

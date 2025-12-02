@@ -129,6 +129,25 @@ namespace ClimbingApp.API.Controllers
             return BadRequest("Something went wrong");
         }
 
+        [AllowAnonymous]
+        [HttpPost("{userId}/{routeId}/rating")]
+        public ActionResult SetRating([FromRoute] int userId, [FromRoute] int routeId, [FromBody] int? rating)
+        {
+            if (rating is not null && (rating < 1 || rating > 5))
+                return BadRequest("Rating must be 1..5 or null.");
+            var ok = Repository.UpsertRating(userId, routeId, rating);
+            return ok ? Ok() : BadRequest("Failed to set rating");
+        }
+
+        [AllowAnonymous] // ggf. entfernen und Auth aktivieren
+        [HttpGet("{userId}/{routeId}/rating")]
+        public ActionResult<int?> GetRating([FromRoute] int userId, [FromRoute] int routeId)
+        {
+            var ur = Repository.GetUserRouteById(userId, routeId);
+            if (ur == null) return NotFound();
+            return Ok(ur.Rating);
+        }
+
         [HttpDelete("{userId}/{routeId}")]
         public ActionResult DeleteUserRoute([FromRoute] int userId, [FromRoute] int routeId)
         {

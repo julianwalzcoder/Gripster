@@ -76,7 +76,7 @@ public class ClimbRepository : BaseRepository
             dbConn?.Close();
         }
     }
-    
+
     public bool InsertRoute(Climb r)
     {
         NpgsqlConnection dbConn = null;
