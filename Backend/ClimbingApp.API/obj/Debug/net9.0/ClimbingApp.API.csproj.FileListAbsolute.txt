@@ -217,3 +217,11 @@
 /Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
 /Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.API/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll

@@ -1,25 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster copy/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {}
+    "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {}
   },
   "projects": {
-    "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster copy/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {
+    "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster copy/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
+        "projectUniqueName": "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
         "projectName": "ClimbingApp.Model",
-        "projectPath": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster copy/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
-        "packagesPath": "/Users/madita/.nuget/packages/",
-        "outputPath": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster copy/Backend/ClimbingApp.Model/obj/",
+        "projectPath": "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
+        "packagesPath": "/Users/mjakobs/.nuget/packages/",
+        "outputPath": "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/madita/.nuget/NuGet/NuGet.Config"
+          "/Users/mjakobs/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "/opt/homebrew/Cellar/dotnet/9.0.7/libexec/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +39,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -69,7 +70,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.306/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.7/libexec/sdk/9.0.108/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

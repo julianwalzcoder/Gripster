@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict VCpspZTPUdLxI4pMr7kLcfbSS63f3DPd4G4vjq1aUq59AtnMfa6bKVnK5BZaq5J
+\restrict mtSjt8fDz3KPVpyFGb2d5hurM7ySlapWYnxweAtnwB5iOjLykssQaaeSAtTM1iu
 
 -- Dumped from database version 17.6 (Postgres.app)
 -- Dumped by pg_dump version 17.6 (Postgres.app)
@@ -18,6 +18,20 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
 
 SET default_tablespace = '';
 
@@ -229,11 +243,12 @@ CREATE TABLE public."User" (
     "Name" character varying(50),
     "Username" character varying(30) NOT NULL,
     "Mail" character varying(100) NOT NULL,
-    "Password" character varying(100) NOT NULL,
+    "PasswordHash" character varying(100) NOT NULL,
     "Street" character varying(50),
     "StreetNumber" integer,
     "Postcode" integer,
-    "City" character varying(50)
+    "City" character varying(50),
+    "Role" character varying(50) DEFAULT 'user'::character varying
 );
 
 
@@ -388,7 +403,6 @@ COPY public."Gym" ("ID", "Name", "Street", "StreetNumber", "Postcode", "City") F
 COPY public."Route" ("ID", "GymID", "GradeID", "SetDate", "RemoveDate", "AdminID") FROM stdin;
 4	2	7	2025-03-15	\N	2
 5	3	3	2025-04-05	\N	3
-6	3	8	2025-04-10	\N	3
 7	4	9	2025-05-01	\N	4
 8	5	10	2025-05-15	\N	5
 9	1	1	2025-02-01	\N	1
@@ -432,7 +446,6 @@ COPY public."Session" ("ID", "UserID", "CustomName", "Date", "Feedback") FROM st
 --
 
 COPY public."SessionRoute" ("SessionID", "RouteID", "Tries", "Rating") FROM stdin;
-3	6	7	4
 4	7	4	5
 5	8	1	5
 \.
@@ -442,12 +455,15 @@ COPY public."SessionRoute" ("SessionID", "RouteID", "Tries", "Rating") FROM stdi
 -- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."User" ("ID", "Name", "Username", "Mail", "Password", "Street", "StreetNumber", "Postcode", "City") FROM stdin;
-1	Max Mustermann	maxm	max.mustermann@example.com	secure123	Hauptstraße	10	10115	Berlin
-2	Anna Schmidt	annas	anna.schmidt@example.com	anna2025	Bahnhofstraße	25	80335	Munich
-3	Lena Bauer	lenab	lena.bauer@example.com	climber45	Alpenweg	7	70173	Stuttgart
-4	Tom Weber	tomw	tom.weber@example.com	boulder2025	Waldstraße	15	50667	Cologne
-5	Lisa Müller	lisam	lisa.mueller@example.com	gymlover	Seeweg	3	20144	Hamburg
+COPY public."User" ("ID", "Name", "Username", "Mail", "PasswordHash", "Street", "StreetNumber", "Postcode", "City", "Role") FROM stdin;
+1	Max Mustermann	maxm	max.mustermann@example.com	secure123	Hauptstraße	10	10115	Berlin	user
+2	Anna Schmidt	annas	anna.schmidt@example.com	anna2025	Bahnhofstraße	25	80335	Munich	user
+3	Lena Bauer	lenab	lena.bauer@example.com	climber45	Alpenweg	7	70173	Stuttgart	user
+4	Tom Weber	tomw	tom.weber@example.com	boulder2025	Waldstraße	15	50667	Cologne	user
+5	Lisa Müller	lisam	lisa.mueller@example.com	gymlover	Seeweg	3	20144	Hamburg	user
+6	\N	boulderking	boulderking@cphsouth.com	$2a$06$.JoUWsFhMOUsTpWtOPFa.uBggvSGQ8fy5lpcVA084o4DUphgbFoaW	\N	\N	\N	\N	user
+7	\N	climber01	climber01@example.com	$2a$06$B5T0aeUPRqVcGPuu2/u5Dem17pg4aG7LI4.w6BY/j.FZ1a.pPc.3q	\N	\N	\N	\N	user
+8	\N	routesetter01	routesetter01@example.com	$2a$06$kWX38pzomNiVgEAk3hZxGO1OAk/b2uNzzlNLUUV0uNFxIio92vY/G	\N	\N	\N	\N	admin
 \.
 
 
@@ -457,15 +473,16 @@ COPY public."User" ("ID", "Name", "Username", "Mail", "Password", "Street", "Str
 
 COPY public."UserRoute" ("UserID", "RouteID", "Status") FROM stdin;
 1	15	Flash
-1	4	Flash
-4	5	Top
+1	28	Attempted
+4	5	Attempted
+1	13	Top
+1	9	Top
+1	4	Attempted
+4	4	Attempted
 1	7	Attempted
 1	10	Top
 1	14	Top
 1	12	Top
-4	4	Attempted
-1	6	Flash
-1	13	Attempted
 1	8	Attempted
 \.
 
@@ -509,7 +526,7 @@ SELECT pg_catalog.setval('public."Session_ID_seq"', 5, true);
 -- Name: User_ID_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."User_ID_seq"', 5, true);
+SELECT pg_catalog.setval('public."User_ID_seq"', 8, true);
 
 
 --
@@ -684,5 +701,5 @@ ALTER TABLE ONLY public."UserRoute"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict VCpspZTPUdLxI4pMr7kLcfbSS63f3DPd4G4vjq1aUq59AtnMfa6bKVnK5BZaq5J
+\unrestrict mtSjt8fDz3KPVpyFGb2d5hurM7ySlapWYnxweAtnwB5iOjLykssQaaeSAtTM1iu
 
