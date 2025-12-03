@@ -63,14 +63,14 @@ export class ClimbService {
     );
   }
 
-   // ADMIN: create new climb (route)
+  // ADMIN: create new climb (route)
   addClimb(climb: Climb): Observable<any> {
     return this.http.post(`${this.baseUrl}/climb`, climb); // POST /climb
   }
 
   // ADMIN: edit existing climb (route data)
   updateClimbAdmin(climb: Climb): Observable<any> {
-    const id = (climb as any).climbId ?? (climb as any).routeId;
+    const id = climb.climbId ?? climb.routeId;
     return this.http.put(`${this.baseUrl}/climb/${id}`, climb); // PUT /climb/{id}
   }
 
@@ -91,7 +91,7 @@ export class ClimbService {
   setRating(userId: number, routeId: number, rating: number | null): Observable<void> {
     return this.http.post<void>(
       `${this.baseUrl}/UserRoute/${userId}/${routeId}/rating`,
-      rating,
+      { rating },
       { headers: { 'Content-Type': 'application/json' } }
     );
   }

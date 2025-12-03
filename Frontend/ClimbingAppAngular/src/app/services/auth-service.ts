@@ -25,14 +25,14 @@ export class AuthService {
         city?: string;
     }) {
         return this.http.post<{ token: string; username: string; role: string }>(
-            `${this.baseUrl}/register`,   
+            `${this.baseUrl}/register`,
             payload
         ).pipe(
             tap(res => {
-                localStorage.setItem(this.TOKEN_KEY, res.token); 
+                localStorage.setItem(this.TOKEN_KEY, res.token);
                 localStorage.setItem('username', res.username);
                 localStorage.setItem('role', res.role);
-                this.loggedIn.next(true);                      
+                this.loggedIn.next(true);
             })
         );
     }
@@ -73,6 +73,6 @@ export class AuthService {
     //checks admin role
     isAdmin(): boolean {
         const role = localStorage.getItem('role');
-        return role === 'user' || role === 'admin';
+        return role === 'admin'
     }
 }

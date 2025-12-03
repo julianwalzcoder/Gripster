@@ -29,13 +29,12 @@ export class AddClimb {
         Validators.pattern('\\d+')
     ]);
 
+    setDate: FormControl<string | null> = new FormControl(null);
+    removeDate: FormControl<string | null> = new FormControl(null);
 
-    setDate: FormControl = new FormControl('', []);       // optional
-    removeDate: FormControl = new FormControl('', []);   // optional
 
-
-    adminId: FormControl = new FormControl('', [
-        Validators.pattern('\\d*') // optional, digits only
+    adminId: FormControl<string | null> = new FormControl('', [
+        Validators.pattern('\\d*')
     ]);
 
 

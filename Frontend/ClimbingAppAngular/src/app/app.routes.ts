@@ -3,12 +3,13 @@ import { ClimbList } from './climb-list/climb-list';
 import { ClimbDetailComponent } from './climb-detail/climb-detail.component';
 import { MyClimbs } from './my-climbs/my-climbs';
 import { MyProjects } from './my-projects/my-projects';
-import { AuthGuard } from './guards/auth.guards';
+import { AuthGuard } from './guards/auth.guard';
 import { Login } from './login/login';
 import { SelectGym } from './select-gym/select-gym';
 import { AddClimb } from './add-climb/add-climb';
 import { EditClimb } from './edit-climb/edit-climb';
-import { AdminGuard } from './guards/auth.guards';
+import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard'; 
 
 export const routes: Routes = [
 
