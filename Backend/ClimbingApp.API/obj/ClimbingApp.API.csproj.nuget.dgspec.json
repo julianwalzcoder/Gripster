@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/ClimbingApp.API.csproj": {}
+    "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.API/ClimbingApp.API.csproj": {}
   },
   "projects": {
-    "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/ClimbingApp.API.csproj": {
+    "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.API/ClimbingApp.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/ClimbingApp.API.csproj",
+        "projectUniqueName": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.API/ClimbingApp.API.csproj",
         "projectName": "ClimbingApp.API",
-        "projectPath": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/ClimbingApp.API.csproj",
-        "packagesPath": "/Users/julianwalz/.nuget/packages/",
-        "outputPath": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.API/obj/",
+        "projectPath": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.API/ClimbingApp.API.csproj",
+        "packagesPath": "/Users/madita/.nuget/packages/",
+        "outputPath": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/julianwalz/.nuget/NuGet/NuGet.Config"
+          "/Users/madita/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -26,8 +26,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {
-                "projectPath": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj"
+              "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {
+                "projectPath": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj"
               }
             }
           }
@@ -42,7 +42,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -92,21 +92,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {
+    "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
+        "projectUniqueName": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
         "projectName": "ClimbingApp.Model",
-        "projectPath": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
-        "packagesPath": "/Users/julianwalz/.nuget/packages/",
-        "outputPath": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/obj/",
+        "projectPath": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
+        "packagesPath": "/Users/madita/.nuget/packages/",
+        "outputPath": "/Users/madita/Nextcloud/Maditas_Docs/Studium/Master/Sem2/Programming/Gripster/Backend/ClimbingApp.Model/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/julianwalz/.nuget/NuGet/NuGet.Config"
+          "/Users/madita/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -130,7 +130,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -161,7 +161,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

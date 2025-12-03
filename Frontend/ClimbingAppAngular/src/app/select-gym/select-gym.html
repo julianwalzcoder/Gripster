@@ -1,0 +1,21 @@
+<form [formGroup]="form" style="max-width: 400px; margin: 40px auto;">
+    <h2>Select Gym</h2>
+
+
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Gym</mat-label>
+        <mat-select formControlName="gymId">
+            <mat-option *ngFor="let g of gyms" [value]="g.id">
+                {{ g.name }}
+            </mat-option>
+        </mat-select>
+        @if (gymControl.hasError('required')) {
+        <mat-error>Gym selection is required</mat-error>
+        }
+    </mat-form-field>
+
+
+    <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="saveGym()">
+        Confirm
+    </button>
+</form>

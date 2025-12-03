@@ -158,4 +158,37 @@ WHERE ""ID"" = @id
         bool result = DeleteData(dbConn, cmd);
         return result;
     }
+
+    public bool InsertUser(User u, string plainPassword)
+    {
+        NpgsqlConnection dbConn = null;
+        try
+        {
+            dbConn = new NpgsqlConnection(ConnectionString);
+            var cmd = dbConn.CreateCommand();
+            cmd.CommandText = @"
+            INSERT INTO ""User"" 
+            (""Name"", ""Username"", ""Mail"", ""PasswordHash"", ""Street"", ""StreetNumber"", ""Postcode"", ""City"", ""Role"")
+            VALUES
+            (@name, @username, @mail, crypt(@password, gen_salt('bf')), @street, @streetnumber, @postcode, @city, 'user')";
+            cmd.Parameters.AddWithValue("@name", NpgsqlDbType.Text, u.Name);
+            cmd.Parameters.AddWithValue("@username", NpgsqlDbType.Text, u.Username);
+            cmd.Parameters.AddWithValue("@mail", NpgsqlDbType.Text, u.Mail);
+            cmd.Parameters.AddWithValue("@password", NpgsqlDbType.Text, plainPassword);
+            cmd.Parameters.AddWithValue("@street", NpgsqlDbType.Text, u.Street);
+            cmd.Parameters.AddWithValue("@streetnumber", NpgsqlDbType.Integer, u.StreetNumber);
+            cmd.Parameters.AddWithValue("@postcode", NpgsqlDbType.Integer, u.Postcode);
+            cmd.Parameters.AddWithValue("@city", NpgsqlDbType.Text, u.City);
+
+            // Role is always 'user' in SQL, not from u.Role
+
+            bool result = InsertData(dbConn, cmd);
+            return result;
+        }
+        finally
+        {
+            dbConn?.Close();
+        }
+    }
+
 }

@@ -5,6 +5,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using ClimbingApp.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClimbingApp.API.Controllers
 {
@@ -13,10 +15,12 @@ namespace ClimbingApp.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AuthRepository _repo;
+        private readonly UserRepository _userRepo;
         private readonly IConfiguration _config;
-        public AuthController(AuthRepository repo, IConfiguration config)
+        public AuthController(AuthRepository repo, UserRepository userRepo, IConfiguration config)
         {
             _repo = repo;
+            _userRepo = userRepo;
             _config = config;
         }
 
@@ -31,6 +35,33 @@ namespace ClimbingApp.API.Controllers
             return Ok(new { token, username = user.Username, role = user.Role });
         }
 
+        //register endpoint
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public IActionResult Register([FromBody] RegisterRequest req)
+        {
+            if (string.IsNullOrWhiteSpace(req.Username) || string.IsNullOrWhiteSpace(req.Password))
+                return BadRequest("Username and password are required");
+
+            var user = new User(0)
+            {
+                Name = req.Name,
+                Username = req.Username,
+                Mail = req.Mail,
+                Street = req.Street,
+                StreetNumber = req.StreetNumber,
+                Postcode = req.Postcode,
+                City = req.City,
+                Role = "user" // enforce normal user
+            };
+
+            var success = _userRepo.InsertUser(user, req.Password); // uses crypt() insert
+            if (!success)
+                return BadRequest("Could not create user");
+
+            var token = GenerateToken(user);
+            return Ok(new { token, username = user.Username, role = user.Role });
+        }
         private string GenerateToken(User user)
         {
             var key = new
