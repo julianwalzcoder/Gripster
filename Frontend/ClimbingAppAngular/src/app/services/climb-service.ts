@@ -27,14 +27,16 @@ export class ClimbService {
             removeDate: session.removeDate ?? session.removedate,
             adminId: session.adminID ?? session.adminid,
             climbId: session.routeID ?? session.routeid
-          };
+          } as Climb;
         });
       })
     );
   }
 
   getAverageRating(routeId: number): Observable<number | null> {
-    return this.http.get<number | null>('http://localhost:5098/api/ClimbingRoute/average-rating/' + routeId);
+    return this.http.get<number | null>(
+      `${this.baseUrl}/api/ClimbingRoute/average-rating/${routeId}`
+    );
   }
 
   getClimb(id: number): Observable<Climb> {
@@ -61,35 +63,42 @@ export class ClimbService {
     );
   }
 
-  createClimb(climb: Climb): Observable<any> {
-    return this.http.post(`${this.baseUrl}/climb`, climb);
+   // ADMIN: create new climb (route)
+  addClimb(climb: Climb): Observable<any> {
+    return this.http.post(`${this.baseUrl}/climb`, climb); // POST /climb
   }
 
-  updateClimbStatus(userID: number, routeID: number, status: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/UserRoute/${userID}/${routeID}/${status}`, {});
+  // ADMIN: edit existing climb (route data)
+  updateClimbAdmin(climb: Climb): Observable<any> {
+    const id = (climb as any).climbId ?? (climb as any).routeId;
+    return this.http.put(`${this.baseUrl}/climb/${id}`, climb); // PUT /climb/{id}
   }
 
-  updateClimb(climb: Climb): Observable<any> {
-    return this.http.put(`${this.baseUrl}/climb`, climb);
-  }
-
+  // ADMIN: delete climb
   deleteClimb(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/climb/${id}`);
   }
 
-  addClimb(climb: Climb): Observable<any> {
-    return this.http.post(`${this.baseUrl}/climb`, climb);
+  // USER: update personal status on a climb
+  updateClimbStatus(userID: number, routeID: number, status: string): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/UserRoute/${userID}/${routeID}/${status}`,
+      {}
+    );
   }
 
-  setRating(userId: number, routeId: number, rating: number | null) {
+  // USER: rate a climb
+  setRating(userId: number, routeId: number, rating: number | null): Observable<void> {
     return this.http.post<void>(
-      `http://localhost:5098/UserRoute/${userId}/${routeId}/rating`,
+      `${this.baseUrl}/UserRoute/${userId}/${routeId}/rating`,
       rating,
       { headers: { 'Content-Type': 'application/json' } }
     );
   }
 
   getUserRating(userId: number, routeId: number): Observable<number | null> {
-    return this.http.get<number | null>(`http://localhost:5098/UserRoute/${userId}/${routeId}/rating`);
+    return this.http.get<number | null>(
+      `${this.baseUrl}/UserRoute/${userId}/${routeId}/rating`
+    );
   }
 }

@@ -69,4 +69,10 @@ export class AuthService {
     getToken(): string | null {
         return localStorage.getItem(this.TOKEN_KEY);
     }
+
+    //checks admin role
+    isAdmin(): boolean {
+        const role = localStorage.getItem('role');
+        return role === 'user' || role === 'admin';
+    }
 }

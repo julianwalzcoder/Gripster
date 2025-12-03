@@ -6,6 +6,9 @@ import { MyProjects } from './my-projects/my-projects';
 import { AuthGuard } from './guards/auth.guards';
 import { Login } from './login/login';
 import { SelectGym } from './select-gym/select-gym';
+import { AddClimb } from './add-climb/add-climb';
+import { EditClimb } from './edit-climb/edit-climb';
+import { AdminGuard } from './guards/auth.guards';
 
 export const routes: Routes = [
 
@@ -17,9 +20,9 @@ export const routes: Routes = [
   { path: 'my-projects', component: MyProjects, canActivate: [AuthGuard] },
   { path: 'select-gym', component: SelectGym, canActivate: [AuthGuard] },
 
-  /* / Admin only
- { path: 'climb/add', component: AddClimb, canActivate: [AuthGuard, AdminGuard] },
- { path: 'climb/:id/edit', component: EditClimb, canActivate: [AuthGuard, AdminGuard] }, */
+  // Admin only
+  { path: 'climb-add', component: AddClimb, canActivate: [AuthGuard, AdminGuard] },
+  { path: 'climb-edit', component: EditClimb, canActivate: [AuthGuard, AdminGuard] },
 
   // Default
   { path: '', redirectTo: '/climbs/1', pathMatch: 'full' },

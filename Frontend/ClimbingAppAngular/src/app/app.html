@@ -7,7 +7,7 @@
     <button routerLink="/my-climbs" mat-menu-item>My Climbs</button>
     <button routerLink="/my-projects" mat-menu-item>My Projects</button>
     <button routerLink="/select-gym" mat-menu-item>Select Gym</button>
-  </mat-menu>
+    <button routerLink="/add-climb" mat-menu-item *ngIf="auth.isAdmin()">Routesetter Menu</button> </mat-menu>
   <span>Gripster</span>
   <span class="spacer" style="flex: 1 1 auto;"></span>
   <button *ngIf="(auth.isLoggedIn$ | async)" (click)="logout()" mat-raised-button color="warn">Logout</button>

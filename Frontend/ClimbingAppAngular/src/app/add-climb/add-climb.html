@@ -1,0 +1,50 @@
+<form [formGroup]="climbFormGroup">
+    <mat-form-field>
+        <mat-label>Gym ID</mat-label>
+        <input matInput type="text" formControlName="gymId">
+        @if (gymId.hasError('required')) {
+        <mat-error>Gym ID is required</mat-error>
+        }
+        @if (gymId.hasError('pattern')) {
+        <mat-error>Gym ID must be a number</mat-error>
+        }
+    </mat-form-field><br />
+
+
+    <mat-form-field>
+        <mat-label>Grade ID</mat-label>
+        <input matInput type="text" formControlName="gradeId">
+        @if (gradeId.hasError('required')) {
+        <mat-error>Grade ID is required</mat-error>
+        }
+        @if (gradeId.hasError('pattern')) {
+        <mat-error>Grade ID must be a number</mat-error>
+        }
+    </mat-form-field><br />
+
+
+    <mat-form-field>
+        <mat-label>Set Date</mat-label>
+        <input matInput type="date" formControlName="setDate">
+    </mat-form-field><br />
+
+
+    <mat-form-field>
+        <mat-label>Remove Date</mat-label>
+        <input matInput type="date" formControlName="removeDate">
+    </mat-form-field><br />
+
+
+    <mat-form-field>
+        <mat-label>Admin ID (optional)</mat-label>
+        <input matInput type="text" formControlName="adminId">
+        @if (adminId.hasError('pattern')) {
+        <mat-error>Admin ID must be digits</mat-error>
+        }
+    </mat-form-field><br />
+
+
+    <button mat-raised-button color="primary" [disabled]="!this.climbFormGroup.valid" (click)="addClimb()">
+        Add Climb
+    </button>
+</form>
