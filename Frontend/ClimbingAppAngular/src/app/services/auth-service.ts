@@ -14,24 +14,54 @@ export class AuthService {
         return !!localStorage.getItem(this.TOKEN_KEY);
     }
 
+    register(payload: {
+        name?: string;
+        username: string;
+        mail?: string;
+        password: string;
+        street?: string;
+        streetNumber?: number;
+        postcode?: number;
+        city?: string;
+    }) {
+        return this.http.post<{ token: string; username: string; role: string }>(
+            `${this.baseUrl}/register`,   
+            payload
+        ).pipe(
+            tap(res => {
+                localStorage.setItem(this.TOKEN_KEY, res.token); 
+                localStorage.setItem('username', res.username);
+                localStorage.setItem('role', res.role);
+                this.loggedIn.next(true);                      
+            })
+        );
+    }
+
     login(username: string, password: string) {
-        return this.http.post<any>(`${this.baseUrl}/login`, { username, password })
-            .pipe(
-                tap(res => {
-                    localStorage.setItem(this.TOKEN_KEY, res.token);
-                    this.loggedIn.next(true);
-                })
-            );
+        return this.http.post<{ token: string; username: string; role: string }>(
+            `${this.baseUrl}/login`,
+            { username, password }
+        ).pipe(
+            tap(res => {
+                localStorage.setItem(this.TOKEN_KEY, res.token);
+                localStorage.setItem('username', res.username);
+                localStorage.setItem('role', res.role);
+                this.loggedIn.next(true);
+            })
+        );
     }
 
     logout() {
         localStorage.removeItem(this.TOKEN_KEY);
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
         this.loggedIn.next(false);
     }
 
     isLoggedIn(): boolean {
         return this.loggedIn.value;
     }
+
     get isLoggedIn$() {
         return this.loggedIn.asObservable();
     }

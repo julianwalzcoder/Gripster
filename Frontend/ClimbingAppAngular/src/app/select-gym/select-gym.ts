@@ -14,16 +14,21 @@ interface GymOption {
     name: string;
 }
 
-
 @Component({
     selector: 'app-select-gym',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatButtonModule],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatButtonModule
+    ],
     templateUrl: './select-gym.html',
     styleUrl: './select-gym.css'
 })
 export class SelectGym {
-    // 4 gyms in Copenhagen, 1 in Malmö
+
     gyms: GymOption[] = [
         { id: 1, name: 'CPH Sydhavn ' },
         { id: 2, name: 'CPH Vanløse' },
@@ -32,13 +37,12 @@ export class SelectGym {
         { id: 5, name: 'Malmö' }
     ];
 
-
     gymControl = new FormControl<number | null>(null, [Validators.required]);
-
 
     form = new FormGroup({
         gymId: this.gymControl
     });
+
     constructor(private router: Router) {
         // Load previous selection if present
         const savedId = localStorage.getItem('selectedGymId');
@@ -47,15 +51,17 @@ export class SelectGym {
         }
     }
 
-
     saveGym() {
         if (this.form.invalid || this.gymControl.value == null) return;
 
+
         localStorage.setItem('selectedGymId', String(this.gymControl.value));
 
+        // after selecting gym, go to that gym's climbs
         this.router.navigate(['/climbs', this.gymControl.value]);
+
     }
 }
 
-export class AppComponent {}
+export class AppComponent { }
 
