@@ -75,4 +75,28 @@ export class AuthService {
         const role = localStorage.getItem('role');
         return role === 'admin'
     }
+
+    getCurrentUserId(): number | null {
+        const token = localStorage.getItem(this.TOKEN_KEY);
+        if (!token){
+            console.log('No token found');
+            return null;
+        } 
+        
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            console.log('JWT Payload:', payload);
+            // ClaimTypes.NameIdentifier typically maps to one of these in JWT
+            const userId = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] 
+                        || payload.nameid 
+                        || payload.sub 
+                        || payload.userId 
+                        || payload.id;
+            console.log('Extracted userId:', userId);
+            return userId ? Number(userId) : null;
+        } catch (e) {
+            console.error('Error parsing token:', e);
+            return null;
+        }
+    }
 }

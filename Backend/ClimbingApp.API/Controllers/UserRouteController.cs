@@ -103,7 +103,7 @@ namespace ClimbingApp.API.Controllers
             return BadRequest("Something went wrong");
         }
         
-        [HttpPost("{userId}/{routeId}/{status}")]
+        [HttpPost("{userId}/{routeId}/status/{status}")]
         public ActionResult InsertUserRouteByID([FromRoute] int userId, [FromRoute] int routeId, [FromRoute] string status)
         {
             // Validate that User exists
@@ -139,12 +139,12 @@ namespace ClimbingApp.API.Controllers
             return ok ? Ok() : BadRequest("Failed to set rating");
         }
 
-        [AllowAnonymous] // ggf. entfernen und Auth aktivieren
+        [AllowAnonymous]
         [HttpGet("{userId}/{routeId}/rating")]
         public ActionResult<int?> GetRating([FromRoute] int userId, [FromRoute] int routeId)
         {
             var ur = Repository.GetUserRouteById(userId, routeId);
-            if (ur == null) return NotFound();
+            if (ur == null) return Ok((int?)null); // Return null instead of 404
             return Ok(ur.Rating);
         }
 

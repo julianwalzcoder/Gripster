@@ -8,7 +8,6 @@ import { Login } from './login/login';
 import { SelectGym } from './select-gym/select-gym';
 import { AddClimb } from './add-climb/add-climb';
 import { EditClimb } from './edit-climb/edit-climb';
-import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard'; 
 
 export const routes: Routes = [

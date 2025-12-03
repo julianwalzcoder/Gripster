@@ -76,6 +76,27 @@
           </div>
         </div>
       </div>
+      
+      <div class="rating-section">
+        <div class="avg-rating" *ngIf="avgRating !== undefined; else noAvg">
+          <span class="rating-label">Average Rating:</span>
+          <span class="rating-value">{{ avgRating | number:'1.1-1' }} / 5</span>
+        </div>
+        <ng-template #noAvg>
+          <div class="avg-rating">
+            <span class="rating-label">Average Rating:</span>
+            <span class="rating-value">No ratings yet</span>
+          </div>
+        </ng-template>
+
+        <!-- User Rating: klickbare Sterne -->
+        <div class="user-rating" *ngIf="climb?.userId">
+          <span class="rating-label">Your Rating:</span>
+          <span class="star-container" *ngFor="let s of [1,2,3,4,5]" (click)="rateClimb(s)">
+            <mat-icon [class.filled]="(userRating ?? 0) >= s">star</mat-icon>
+          </span>
+        </div>
+      </div>
     </mat-card-content>
     
     <mat-card-actions>

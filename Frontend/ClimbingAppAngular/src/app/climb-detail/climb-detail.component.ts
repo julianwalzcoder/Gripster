@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { ClimbService } from '../services/climb-service';
+import { AuthService } from '../services/auth-service';
 import { Climb } from '../model/climb';
 
 @Component({
@@ -21,12 +22,12 @@ export class ClimbDetailComponent implements OnInit {
   climb!: Climb;
   loading = true;
   error: string | null = null;
-  
-  // Default user ID (should be replaced with auth service)
-  private readonly defaultUserId = 1;
+    avgRating?: number; // Durchschnitt für diese Route
+  userRating?: number; // aktuelle Bewertung des Users
   
   constructor(
     private climbService: ClimbService,
+    private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -36,6 +37,29 @@ export class ClimbDetailComponent implements OnInit {
     this.climbID = Number(this.route.snapshot.paramMap.get('id'));
     console.log('Climb ID from route:', this.climbID);
     this.loadClimb();
+    
+  if (this.climbID) {
+      this.climbService.getAverageRating(this.climbID).subscribe({
+        next: (avg: number | null) => this.avgRating = avg ?? undefined,
+        error: () => this.avgRating = undefined
+      });
+      
+      const userId = this.authService.getCurrentUserId();
+      if (userId) {
+        this.climbService.getUserRating(userId, this.climbID).subscribe({
+          next: (rating: number | null) => this.userRating = rating ?? undefined,
+          error: (err) => {
+            // 404 is expected if user hasn't rated yet
+            if (err.status === 404) {
+              this.userRating = undefined;
+            } else {
+              console.error('Error fetching user rating:', err);
+              this.userRating = undefined;
+            }
+          }
+        });
+      }
+    }
   }
 
   loadClimb(): void {
@@ -75,7 +99,7 @@ export class ClimbDetailComponent implements OnInit {
   }
 
   updateClimbStatus(userId: number, routeId: number, status: string): void {
-    const effectiveUserId = this.climb.userId ?? this.defaultUserId;
+    const effectiveUserId = this.authService.getCurrentUserId() ?? 1;
     console.log('Update status clicked:', effectiveUserId, routeId, status);
     this.climbService.updateClimbStatus(effectiveUserId, routeId, status).subscribe({
       next: () => {
@@ -90,7 +114,27 @@ export class ClimbDetailComponent implements OnInit {
   }
 
   updateClimbStatusWithDefault(routeId: number, status: string): void {
-    const userId = this.climb.userId ?? this.defaultUserId;
+    const userId = this.authService.getCurrentUserId() ?? 1;
     this.updateClimbStatus(userId, routeId, status);
   }
+
+ rateClimb(rating: number): void {
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) { 
+      alert('Please log in to rate climbs'); 
+      return; 
+    }
+    this.userRating = rating; // sofortiges UI-Feedback
+    this.climbService.setRating(userId, this.climb.routeId, rating).subscribe({
+      next: () => {
+        // Durchschnitt optional neu laden
+        this.climbService.getAverageRating(this.climb.routeId).subscribe(avg => this.avgRating = avg ?? undefined);
+      },
+      error: (err) => {
+        console.error('Rating failed', err);
+        alert('Rating failed');
+      }
+    });
+  }
+
 }

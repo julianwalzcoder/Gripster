@@ -32,7 +32,9 @@ namespace ClimbingApp.API.Controllers
             { return Unauthorized("Invalid username or password"); }
 
             var token = GenerateToken(user);
-            return Ok(new { token, username = user.Username, role = user.Role });
+            // Debug: check if user has ID
+            Console.WriteLine($"User ID after validation: {user.Id}");
+            return Ok(new { token, username = user.Username, role = user.Role, userId = user.Id });
         }
 
         //register endpoint
@@ -59,20 +61,27 @@ namespace ClimbingApp.API.Controllers
             if (!success)
                 return BadRequest("Could not create user");
 
-            var token = GenerateToken(user);
-            return Ok(new { token, username = user.Username, role = user.Role });
+            // Need to retrieve the user to get the generated ID
+            var createdUser = _repo.ValidateUser(req.Username, req.Password);
+            if (createdUser == null)
+                return BadRequest("User created but could not retrieve");
+
+            var token = GenerateToken(createdUser);
+            Console.WriteLine($"User ID after registration: {createdUser.Id}");
+            return Ok(new { token, username = createdUser.Username, role = createdUser.Role, userId = createdUser.Id });
         }
         private string GenerateToken(User user)
         {
             var key = new
-            SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? ""));
             var creds = new SigningCredentials(key,
             SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-new Claim(ClaimTypes.Name, user .Username),
-new Claim(ClaimTypes.Role, user .Role)
-};
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username ?? ""),
+                new Claim(ClaimTypes.Role, user.Role ?? "user")
+            };
             var token = new JwtSecurityToken(
             claims: claims,
             expires: DateTime.UtcNow.AddHours(2),
@@ -84,7 +93,7 @@ new Claim(ClaimTypes.Role, user .Role)
 
     public class LoginRequest
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; }
     }
 }

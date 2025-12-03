@@ -6,6 +6,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ClimbService } from '../services/climb-service';
+import { S } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'app-add-climb',
@@ -53,14 +54,14 @@ export class AddClimb {
             return;
         }
 
-
         this.climbService.addClimb({
-            id: 0,
+            routeId: 0,
             gymId: Number(this.gymId.value),
-            gradeId: Number(this.gradeId.value),
-            setDate: this.setDate.value ? new Date(this.setDate.value) : null,
-            removeDate: this.removeDate.value ? new Date(this.removeDate.value) : null,
-            adminId: this.adminId.value ? Number(this.adminId.value) : null
+            grade: String(this.gradeId.value),
+            status: "",
+            setDate: new Date(this.setDate.value!),
+            removeDate: this.removeDate.value ? new Date(this.removeDate.value) : undefined,
+            adminId: this.adminId.value ? Number(this.adminId.value) : 0
         }).subscribe({
             next: () => {
                 console.log('Climb created');
@@ -70,3 +71,4 @@ export class AddClimb {
         });
     }
 }
+

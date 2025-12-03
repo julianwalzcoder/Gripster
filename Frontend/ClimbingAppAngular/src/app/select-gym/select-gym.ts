@@ -54,14 +54,13 @@ export class SelectGym {
     saveGym() {
         if (this.form.invalid || this.gymControl.value == null) return;
 
-
         localStorage.setItem('selectedGymId', String(this.gymControl.value));
 
-        // after selecting gym, go to that gym's climbs
-        this.router.navigate(['/climbs', this.gymControl.value]);
-
+        // Navigate to climbs page - the service will read selectedGymId from localStorage
+        this.router.navigate(['/climbs/', this.gymControl.value]);
     }
 }
 
 export class AppComponent { }
+
 

@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from './services/auth-service';
+import { ClimbService } from './services/climb-service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -16,10 +17,11 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.css'
 })
 export class App {
-  constructor(public auth: AuthService, private router: Router) { }
+  constructor(public climb: ClimbService, public auth: AuthService, private router: Router) { }
   logout() {
     this.auth.logout();
     this.router.navigate(['/login']);
   }
   protected readonly title = signal('ClimbingAppAngular');
+
 }

@@ -7,6 +7,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { Climb } from '../model/climb';
 import { ClimbService } from '../services/climb-service';
+import { AuthService } from '../services/auth-service';
 
 @Component({
   selector: 'app-climb-card',
@@ -19,13 +20,11 @@ export class ClimbCard {
   constructor(
     private router: Router,
     private climbService: ClimbService,
+    private authService: AuthService
   ) {}
 
   @Input() climb!: Climb;
   @Output() delete = new EventEmitter<number>();
-
-  // Default user ID (should be replaced with auth service)
-  private readonly defaultUserId = 1;
 
   avgRating?: number; // Durchschnitt für diese Route
   userRating?: number; // aktuelle Bewertung des Users
@@ -36,11 +35,20 @@ export class ClimbCard {
         next: (avg: number | null) => this.avgRating = avg ?? undefined,
         error: () => this.avgRating = undefined
       });
-      // User-Rating laden
-      if (this.climb.userId) {
-        this.climbService.getUserRating(this.climb.userId, this.climb.routeId).subscribe({
+      
+      const userId = this.authService.getCurrentUserId();
+      if (userId) {
+        this.climbService.getUserRating(userId, this.climb.routeId).subscribe({
           next: (rating: number | null) => this.userRating = rating ?? undefined,
-          error: () => this.userRating = undefined
+          error: (err) => {
+            // 404 is expected if user hasn't rated yet
+            if (err.status === 404) {
+              this.userRating = undefined;
+            } else {
+              console.error('Error fetching user rating:', err);
+              this.userRating = undefined;
+            }
+          }
         });
       }
     }
@@ -65,7 +73,11 @@ export class ClimbCard {
   }
 
   updateClimbStatus(routeId: number, status: string): void {
-    const userId = this.climb.userId ?? this.defaultUserId;
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
+      alert('Please log in to update climb status');
+      return;
+    }
     console.log('Update status clicked:', userId, routeId, status);
     this.climbService.updateClimbStatus(userId, routeId, status).subscribe({
       next: () => {
@@ -80,8 +92,11 @@ export class ClimbCard {
   }
 
   rateClimb(rating: number): void {
-    const userId = this.climb.userId;
-    if (!userId) { alert('Bitte einloggen'); return; }
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) { 
+      alert('Please log in to rate climbs'); 
+      return; 
+    }
     this.userRating = rating; // sofortiges UI-Feedback
     this.climbService.setRating(userId, this.climb.routeId, rating).subscribe({
       next: () => {
@@ -90,7 +105,7 @@ export class ClimbCard {
       },
       error: (err) => {
         console.error('Rating failed', err);
-        alert('Raiting failed');
+        alert('Rating failed');
       }
     });
   }
