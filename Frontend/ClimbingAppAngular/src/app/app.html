@@ -1,15 +1,47 @@
-<mat-toolbar>
-  <button mat-icon-button class="example-icon" aria-label="Open main menu" [matMenuTriggerFor]="menu">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button routerLink="/climbs/{{ climb.getGymID() }}" mat-menu-item>All climbs</button>
-    <button routerLink="/my-climbs" mat-menu-item>My Climbs</button>
-    <button routerLink="/my-projects" mat-menu-item>My Projects</button>
-    <button routerLink="/select-gym" mat-menu-item>Select Gym</button>
-    <button routerLink="/add-climb" mat-menu-item *ngIf="auth.isAdmin()">Routesetter Menu</button> </mat-menu>
-  <span>Gripster</span>
-  <span class="spacer" style="flex: 1 1 auto;"></span>
-  <button *ngIf="(auth.isLoggedIn$ | async)" (click)="logout()" mat-raised-button color="warn">Logout</button>
-</mat-toolbar>
-<router-outlet />
+<div class="app-container">
+
+  <mat-toolbar>
+    <button mat-icon-button class="example-icon" aria-label="Open main menu" [matMenuTriggerFor]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <img src="assets/images/gripster.jpeg" style="height:40px; margin-right:10px;">
+
+    <mat-menu #menu="matMenu">
+      <button routerLink="/climbs/{{ climb.getGymID() }}" mat-menu-item>Climbs</button>
+      <button routerLink="/my-projects" mat-menu-item>Sessions</button>
+      <button routerLink="/my-climbs" mat-menu-item>My Climbs</button>
+      <button routerLink="/my-projects" mat-menu-item>My Projects</button>
+      <button routerLink="/select-gym" mat-menu-item>Change Gym</button>
+    </mat-menu>
+
+    <span>Gripster</span>
+    <span class="spacer" style="flex: 1 1 auto;"></span>
+
+    <button *ngIf="auth.isAdmin()" mat-raised-button color="accent" [matMenuTriggerFor]="adminMenu">
+      Admin
+    </button>
+
+    <mat-menu #adminMenu="matMenu">
+      <button routerLink="/climb-add" mat-menu-item>Add Climb</button>
+      <button routerLink="/climb-edit" mat-menu-item>Edit Climb</button>
+    </mat-menu>
+
+    <span class="spacer" style="flex: 0 0 5px;"></span>
+
+    <button *ngIf="(auth.isLoggedIn$ | async)" (click)="logout()" mat-raised-button color="white">Logout</button>
+  </mat-toolbar>
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer
+    style="text-align:center; padding:1rem; font-size:0.85rem; color:rgb(255, 255, 255); background-color:rgb(112, 112, 212);">
+    <a routerLink="/terms" style="margin:0 0.5rem;">Terms</a> |
+    <a routerLink="/privacy" style="margin:0 0.5rem;">Privacy</a> |
+    <a routerLink="/eu-legal" style="margin:0 0.5rem;">EU Legal</a> |
+    <a routerLink="/security" style="margin:0 0.5rem;">Security Measures</a> |
+    <a routerLink="/sitemap" style="margin:0 0.5rem;">Sitemap</a>
+    <p>© 2025 Gripster, Inc.</p>
+  </footer>
+</div>

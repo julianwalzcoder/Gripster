@@ -1,3 +1,28 @@
 mat-toolbar {
-background-color: rgb(112, 112, 212);
-} 
+    background-color: rgb(112, 112, 212);
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+}
+
+/* The main content grows to fill space */
+main {
+  flex: 1;
+}
+
+/* footer style */
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: white;
+  background-color: rgb(112, 112, 212);
+}

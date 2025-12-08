@@ -51,7 +51,10 @@ export class Login {
       });
     } else {
       this.auth.login(this.username, this.password).subscribe({
-        next: () => this.router.navigate(['/select-gym']),
+        next: (user) => {
+          localStorage.setItem('loggedInUser', JSON.stringify(user)); // store logged-in user
+          this.router.navigate(['/select-gym']);
+        },
         error: () => this.error = 'Login failed'
       });
     }

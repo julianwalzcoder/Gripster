@@ -33,7 +33,7 @@ namespace ClimbingApp.API.Controllers
 
             var token = GenerateToken(user);
             // Debug: check if user has ID
-            Console.WriteLine($"User ID after validation: {user.Id}");
+            Console.WriteLine($"User ID after validation: {user.Id} {user.Role}");
             return Ok(new { token, username = user.Username, role = user.Role, userId = user.Id });
         }
 

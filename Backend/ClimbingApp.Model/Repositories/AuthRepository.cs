@@ -18,12 +18,7 @@ namespace ClimbingApp.Model.Repositories
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
 
-                cmd.CommandText = @"SELECT u.""ID"", u.""Username"", u.""Mail"", u.""PasswordHash"",
-                                           CASE WHEN a.""UserID"" IS NOT NULL THEN 'admin' ELSE 'user' END AS ""Role""
-                                    FROM ""User"" u
-                                    LEFT JOIN ""Admin"" a ON u.""ID"" = a.""UserID""
-                                    WHERE u.""Username"" = @username
-                                      AND u.""PasswordHash"" = crypt(@password, u.""PasswordHash"");";
+                cmd.CommandText = @"SELECT * FROM ""User"" WHERE ""Username"" = @username AND ""PasswordHash"" = crypt(@password, ""PasswordHash)";
 
                 cmd.Parameters.AddWithValue("@username", NpgsqlDbType.Text, username);
                 cmd.Parameters.AddWithValue("@password", NpgsqlDbType.Text, password);
@@ -34,6 +29,7 @@ namespace ClimbingApp.Model.Repositories
                 {
                     return new User((int)data["ID"])
                     {
+                        Id = (int)data["ID"],
                         Username = data["Username"].ToString(),
                         Mail = data["Mail"].ToString(),
                         PasswordHash = data["PasswordHash"].ToString(),
