@@ -129,7 +129,6 @@ namespace ClimbingApp.API.Controllers
             return BadRequest("Something went wrong");
         }
 
-        [AllowAnonymous]
         [HttpPost("{userId}/{routeId}/rating")]
         public ActionResult SetRating([FromRoute] int userId, [FromRoute] int routeId, [FromBody] int? rating)
         {
@@ -139,7 +138,6 @@ namespace ClimbingApp.API.Controllers
             return ok ? Ok() : BadRequest("Failed to set rating");
         }
 
-        [AllowAnonymous]
         [HttpGet("{userId}/{routeId}/rating")]
         public ActionResult<int?> GetRating([FromRoute] int userId, [FromRoute] int routeId)
         {

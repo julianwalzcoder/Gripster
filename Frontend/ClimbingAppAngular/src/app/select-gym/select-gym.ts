@@ -7,12 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-
-
-interface GymOption {
-    id: number;
-    name: string;
-}
+import { GymService, GymOption } from '../services/gym-service';
 
 @Component({
     selector: 'app-select-gym',
@@ -29,13 +24,7 @@ interface GymOption {
 })
 export class SelectGym {
 
-    gyms: GymOption[] = [
-        { id: 1, name: 'CPH Sydhavn ' },
-        { id: 2, name: 'CPH Vanløse' },
-        { id: 3, name: 'CPH Valby' },
-        { id: 4, name: 'CPH Østerbro' },
-        { id: 5, name: 'Malmö' }
-    ];
+    gyms: GymOption[] = [];
 
     gymControl = new FormControl<number | null>(null, [Validators.required]);
 
@@ -43,12 +32,22 @@ export class SelectGym {
         gymId: this.gymControl
     });
 
-    constructor(private router: Router) {
+    constructor(private router: Router, private gymService: GymService) {
         // Load previous selection if present
         const savedId = localStorage.getItem('selectedGymId');
         if (savedId) {
             this.gymControl.setValue(Number(savedId));
         }
+    }
+
+    ngOnInit(): void {
+        this.gymService.getGyms().subscribe({
+            next: (gyms) => this.gyms = gyms,
+            error: (err) => {
+                console.error('Failed to load gyms', err);
+                this.gyms = [];
+            }
+        });
     }
 
     saveGym() {

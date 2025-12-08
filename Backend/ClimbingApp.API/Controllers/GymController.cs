@@ -3,7 +3,7 @@ using ClimbingApp.Model.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-
+using System.Linq;
 
 namespace ClimbingApp.API.Controllers
 {
@@ -30,9 +30,10 @@ namespace ClimbingApp.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Gym>> GetGyms()
+        public ActionResult<IEnumerable<object>> GetGyms()
         {
-            return Ok(Repository.GetGyms());
+            var gyms = Repository.GetGyms().Select(g => new { id = g.Id, name = g.Name }).ToList();
+            return Ok(gyms);
         }
 
         [HttpPost]

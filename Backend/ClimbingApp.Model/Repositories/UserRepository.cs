@@ -3,6 +3,7 @@ using ClimbingApp.Model.Entities;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using NpgsqlTypes;
+using System.Data;
 
 namespace ClimbingApp.Model.Repositories;
 
@@ -27,15 +28,15 @@ public class UserRepository : BaseRepository
                 {
                     return new User(Convert.ToInt32(data["ID"]))
                     {
-                        Name = data["Name"].ToString(),
-                        Username = data["Username"].ToString(),
-                        Mail = data["Mail"].ToString(),
-                        PasswordHash = data["PasswordHash"].ToString(),
-                        Street = data["Street"].ToString(),
-                        StreetNumber = Convert.ToInt32(data["StreetNumber"]),
-                        Postcode = Convert.ToInt32(data["Postcode"]),
-                        City = data["City"].ToString(),
-                        Role = data["Role"].ToString()
+                        Name = data["Name"] == DBNull.Value ? null : data["Name"].ToString(),
+                        Username = data["Username"] == DBNull.Value ? null : data["Username"].ToString(),
+                        Mail = data["Mail"] == DBNull.Value ? null : data["Mail"].ToString(),
+                        PasswordHash = data["PasswordHash"] == DBNull.Value ? null : data["PasswordHash"].ToString(),
+                        Street = data["Street"] == DBNull.Value ? null : data["Street"].ToString(),
+                        StreetNumber = data["StreetNumber"] == DBNull.Value ? 0 : Convert.ToInt32(data["StreetNumber"]),
+                        Postcode = data["Postcode"] == DBNull.Value ? 0 : Convert.ToInt32(data["Postcode"]),
+                        City = data["City"] == DBNull.Value ? null : data["City"].ToString(),
+                        Role = data["Role"] == DBNull.Value ? null : data["Role"].ToString()
                     };
                 }
             }
@@ -64,15 +65,15 @@ public class UserRepository : BaseRepository
                 {
                     User u = new User(Convert.ToInt32(data["ID"]))
                     {
-                        Name = data["Name"].ToString(),
-                        Username = data["Username"].ToString(),
-                        Mail = data["Mail"].ToString(),
-                        PasswordHash = data["PasswordHash"].ToString(),
-                        Street = data["Street"].ToString(),
-                        StreetNumber = Convert.ToInt32(data["StreetNumber"]),
-                        Postcode = Convert.ToInt32(data["Postcode"]),
-                        City = data["City"].ToString(),
-                        Role = data["Role"].ToString()
+                        Name = data["Name"] == DBNull.Value ? null : data["Name"].ToString(),
+                        Username = data["Username"] == DBNull.Value ? null : data["Username"].ToString(),
+                        Mail = data["Mail"] == DBNull.Value ? null : data["Mail"].ToString(),
+                        PasswordHash = data["PasswordHash"] == DBNull.Value ? null : data["PasswordHash"].ToString(),
+                        Street = data["Street"] == DBNull.Value ? null : data["Street"].ToString(),
+                        StreetNumber = data["StreetNumber"] == DBNull.Value ? 0 : Convert.ToInt32(data["StreetNumber"]),
+                        Postcode = data["Postcode"] == DBNull.Value ? 0 : Convert.ToInt32(data["Postcode"]),
+                        City = data["City"] == DBNull.Value ? null : data["City"].ToString(),
+                        Role = data["Role"] == DBNull.Value ? null : data["Role"].ToString()
                     };
                     users.Add(u);
                 }

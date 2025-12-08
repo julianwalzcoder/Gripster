@@ -108,7 +108,7 @@ export class ClimbService {
   // USER: update personal status on a climb
   updateClimbStatus(userID: number, routeID: number, status: string): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/UserRoute/${userID}/${routeID}/${status}`,
+      `${this.baseUrl}/UserRoute/${userID}/${routeID}/status/${encodeURIComponent(status)}`,
       {}
     );
   }
