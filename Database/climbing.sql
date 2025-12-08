@@ -205,7 +205,8 @@ ALTER TABLE public."Session" OWNER TO postgres;
 CREATE TABLE public."SessionRoute" (
     "SessionID" integer NOT NULL,
     "RouteID" integer NOT NULL,
-    "Tries" integer
+    "Tries" integer,
+    "Status" character varying(10)  -- new per-session status
 );
 
 
@@ -438,6 +439,19 @@ COPY public."Session" ("ID", "UserID", "CustomName", "Date", "Feedback") FROM st
 3	3	Project Session	2025-06-03	Worked on my 7A project.
 4	4	Evening Climbing	2025-06-04	Good progress on overhangs.
 5	5	Weekend Bouldering	2025-06-05	Tried new routes, loved it!
+6	1	Project Day 1	2025-06-06	Working the moves on Route 10
+7	1	Project Day 2	2025-06-08	Felt better today
+8	2	Training Block A	2025-06-06	Focus on consistency
+9	2	Training Block B	2025-06-09	Pushed hard
+10	3	Redpoint Try 1	2025-06-07	Nearly stuck the crux
+11	3	Redpoint Try 2	2025-06-10	Got past crux
+12	4	Evening Attempts	2025-06-06	Tried new beta
+13	4	Send Night	2025-06-11	Beta worked!
+14	5	Morning Session	2025-06-06	Warm-up and attempts
+15	5	Weekend Send	2025-06-12	Felt strong
+16	7	Project Kickoff	2025-06-06	First attempts on Route 14
+17	7	Project Midweek	2025-06-09	Trying new beta
+18	7	Project Send	2025-06-12	Finally sent!
 \.
 
 
@@ -445,9 +459,22 @@ COPY public."Session" ("ID", "UserID", "CustomName", "Date", "Feedback") FROM st
 -- Data for Name: SessionRoute; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."SessionRoute" ("SessionID", "RouteID", "Tries") FROM stdin;
-4	7	4
-5	8	1
+COPY public."SessionRoute" ("SessionID", "RouteID", "Tries", "Status") FROM stdin;
+4	7	4	Attempted
+5	8	1	Flash
+6	10	3	Attempted
+7	10	2	Flash
+8	15	4	Attempted
+9	15	2	Top
+10	7	5	Attempted
+11	7	3	Top
+12	5	2	Attempted
+13	5	1	Flash
+14	28	6	Attempted
+15	28	2	Top
+16	14	5	Attempted
+17	14	3	Attempted
+18	14	2	Top
 \.
 
 
@@ -519,7 +546,7 @@ SELECT pg_catalog.setval('public."Route_ID_seq"', 28, true);
 -- Name: Session_ID_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Session_ID_seq"', 5, true);
+SELECT pg_catalog.setval('public."Session_ID_seq"', 18, true);
 
 
 --
