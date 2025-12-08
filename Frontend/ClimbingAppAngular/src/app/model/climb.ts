@@ -9,6 +9,7 @@
 export interface Climb {
   userId?: number;
   routeId: number;
+  gradeId?: number;
   grade: string;
   status: string;
   gymId: number;

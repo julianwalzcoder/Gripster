@@ -33,8 +33,17 @@ namespace ClimbingApp.API.Controllers
 
             var token = GenerateToken(user);
             // Debug: check if user has ID
-            Console.WriteLine($"User ID after validation: {user.Id} {user.Role}");
-            return Ok(new { token, username = user.Username, role = user.Role, userId = user.Id });
+            Console.WriteLine($"User ID after validation: {user.Id} {user.Role} AdminID: {user.AdminId}");
+            
+            var response = new { 
+                token, 
+                username = user.Username, 
+                role = user.Role, 
+                userId = user.Id, 
+                adminId = user.Role == "admin" ? (int?)user.AdminId : null 
+            };
+            
+            return Ok(response);
         }
 
         //register endpoint
@@ -76,14 +85,22 @@ namespace ClimbingApp.API.Controllers
             SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? ""));
             var creds = new SigningCredentials(key,
             SecurityAlgorithms.HmacSha256);
-            var claims = new[]
+            
+            var claimsList = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username ?? ""),
                 new Claim(ClaimTypes.Role, user.Role ?? "user")
             };
+            
+            // Only add adminId claim if user is admin and has an adminId
+            if (user.Role == "admin" && user.AdminId > 0)
+            {
+                claimsList.Add(new Claim("adminId", user.AdminId.ToString()));
+            }
+            
             var token = new JwtSecurityToken(
-            claims: claims,
+            claims: claimsList,
             expires: DateTime.UtcNow.AddHours(2),
             signingCredentials: creds
             );

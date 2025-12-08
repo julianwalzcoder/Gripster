@@ -18,7 +18,7 @@ namespace ClimbingApp.Model.Repositories
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
 
-                cmd.CommandText = @"SELECT * FROM ""User"" WHERE ""Username"" = @username AND ""PasswordHash"" = crypt(@password, ""PasswordHash)";
+                cmd.CommandText = @"SELECT * FROM ""User"" WHERE ""Username"" = @username AND ""PasswordHash"" = crypt(@password, ""PasswordHash"");";
 
                 cmd.Parameters.AddWithValue("@username", NpgsqlDbType.Text, username);
                 cmd.Parameters.AddWithValue("@password", NpgsqlDbType.Text, password);
@@ -27,7 +27,7 @@ namespace ClimbingApp.Model.Repositories
 
                 if (data != null && data.Read())
                 {
-                    return new User((int)data["ID"])
+                    var user = new User((int)data["ID"])
                     {
                         Id = (int)data["ID"],
                         Username = data["Username"].ToString(),
@@ -35,6 +35,27 @@ namespace ClimbingApp.Model.Repositories
                         PasswordHash = data["PasswordHash"].ToString(),
                         Role = data["Role"].ToString()
                     };
+
+                    // Close the first reader before executing another command
+                    data.Close();
+
+                    // If user is admin, fetch the Admin.ID
+                    if (user.Role == "admin")
+                    {
+                        var adminCmd = dbConn.CreateCommand();
+                        adminCmd.CommandText = @"SELECT ""ID"" FROM ""Admin"" WHERE ""UserID"" = @userId;";
+                        adminCmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, user.Id);
+
+                        using (var adminReader = adminCmd.ExecuteReader())
+                        {
+                            if (adminReader != null && adminReader.Read())
+                            {
+                                user.AdminId = (int)adminReader["ID"];
+                            }
+                        }
+                    }
+
+                    return user;
                 }
                 return null;
             }

@@ -38,7 +38,7 @@ export class AuthService {
     }
 
     login(username: string, password: string) {
-        return this.http.post<{ token: string; username: string; role: string }>(
+        return this.http.post<{ token: string; username: string; role: string; adminId?: number }>(
             `${this.baseUrl}/login`,
             { username, password }
         ).pipe(
@@ -46,6 +46,9 @@ export class AuthService {
                 localStorage.setItem(this.TOKEN_KEY, res.token);
                 localStorage.setItem('username', res.username);
                 localStorage.setItem('role', res.role);
+                if (res.adminId) {
+                    localStorage.setItem('adminId', res.adminId.toString());
+                }
                 this.loggedIn.next(true);
             })
         );
@@ -55,6 +58,7 @@ export class AuthService {
         localStorage.removeItem(this.TOKEN_KEY);
         localStorage.removeItem('username');
         localStorage.removeItem('role');
+        localStorage.removeItem('adminId');
         this.loggedIn.next(false);
     }
 
@@ -99,5 +103,10 @@ export class AuthService {
             console.error('Error parsing token:', e);
             return null;
         }
+    }
+
+    getAdminId(): number | null {
+        const adminId = localStorage.getItem('adminId');
+        return adminId ? Number(adminId) : null;
     }
 }

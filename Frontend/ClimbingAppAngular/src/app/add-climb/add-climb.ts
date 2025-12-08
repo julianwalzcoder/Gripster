@@ -6,6 +6,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ClimbService } from '../services/climb-service';
+import { AuthService } from '../services/auth-service';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -43,7 +44,11 @@ interface User {
 })
 
 export class AddClimb {
-    constructor(private climbService: ClimbService, private router: Router) { }
+    constructor(
+        private climbService: ClimbService, 
+        private router: Router,
+        private authService: AuthService
+    ) { }
 
     currentAdmin: User = JSON.parse(localStorage.getItem('loggedInUser')!);
 
@@ -88,24 +93,31 @@ export class AddClimb {
 
     addClimb() {
         if (!this.climbFormGroup.valid) return;
+        
+        const adminId = this.authService.getAdminId();
+        if (!adminId) {
+            console.error('No admin ID found. Please ensure you are logged in as an admin.');
+            return;
+        }
 
         const formValue = this.climbFormGroup.value;
 
         this.climbService.addClimb({
             routeId: 0,
             gymId: formValue.gymId!,
-            grade: formValue.gradeId!,
+            gradeId: formValue.gradeId!,
+            grade: formValue.grade!,
             status: '',
             setDate: formValue.setDate ? new Date(formValue.setDate) : undefined as unknown as Date,
             removeDate: formValue.removeDate ? new Date(formValue.removeDate) : undefined as unknown as Date,
-            adminId: this.currentAdmin.id
+            adminId: adminId
         }).subscribe({
             next: () => {
-                // Show success message
                 this.successMessage = 'Climb added successfully!';
-
-                // Reset the form to add another climb
-                this.climbFormGroup.reset();
+                // Redirect to climbs page for the selected gym
+                setTimeout(() => {
+                    this.router.navigate(['/climbs/', formValue.gymId]);
+                }, 1000);
             },
             error: (err: any) => console.error('Error creating climb:', err)
         });
