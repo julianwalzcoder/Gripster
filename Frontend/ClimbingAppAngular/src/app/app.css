@@ -7,6 +7,12 @@ mat-toolbar mat-icon {
   color: white !important;
 }
 
+.logo-text {
+  font-family: 'Arvo', serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
 body,
 html {
   height: 100%;
