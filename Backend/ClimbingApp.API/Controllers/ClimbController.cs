@@ -12,7 +12,7 @@ namespace ClimbingApp.API.Controllers
     public class ClimbController : ControllerBase
     {
         protected ClimbRepository Repository { get; }
-        
+
         public ClimbController(ClimbRepository repository)
         {
             Repository = repository;
@@ -35,45 +35,41 @@ namespace ClimbingApp.API.Controllers
             return Ok(Repository.GetRoutes());
         }
 
+        // ADMIN: create climb
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public ActionResult Post([FromBody] Climb route)
         {
             if (route == null)
-            {
                 return BadRequest("Climb info not correct");
-            }
-            bool status = Repository.InsertRoute(route);
-            if (status)
-            {
-                return Ok();
-            }
-            return BadRequest();
+
+            var status = Repository.InsertRoute(route);
+            return status ? Ok() : BadRequest();
         }
 
+        // ADMIN: update climb metadata (grade, dates, etc.)
         [HttpPut]
-        public ActionResult Put([FromBody] Climb route)
+        [Authorize(Roles = "admin")]
+        public ActionResult Put([FromBody] Climb climb)
         {
-            if (route == null)
-            {
+            if (climb == null)
                 return BadRequest("Climb info not correct");
-            }
-            bool status = Repository.UpdateRoute(route);
-            if (status)
-            {
-                return Ok();
-            }
-            return BadRequest();
+
+            var existingRoute = Repository.GetRouteById(climb.Id);
+            if (existingRoute == null)
+                return NotFound($"Route with id {climb.Id} not found");
+
+            var status = Repository.UpdateRoute(climb);
+            return status ? Ok() : BadRequest("Something went wrong");
         }
 
+        // ADMIN: delete climb
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public ActionResult Delete([FromRoute] int id)
         {
-            bool status = Repository.DeleteRoute(id);
-            if (status)
-            {
-                return NoContent();
-            }
-            return BadRequest();
+            var status = Repository.DeleteRoute(id);
+            return status ? NoContent() : BadRequest();
         }
     }
 }

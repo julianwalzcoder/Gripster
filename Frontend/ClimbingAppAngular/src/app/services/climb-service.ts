@@ -11,35 +11,35 @@ import { AuthService } from './auth-service';
 export class ClimbService {
   baseUrl = 'http://localhost:5098';
   private authService = inject(AuthService);
-  
+
   constructor(private http: HttpClient) { }
 
   getClimbs(): Observable<Climb[]> {
     const currentUserId = this.authService.getCurrentUserId();
     const selectedGymId = localStorage.getItem('selectedGymId');
-    
+
     // If gym is selected, fetch sessions filtered by gym; otherwise fetch all
-    const endpoint = selectedGymId 
+    const endpoint = selectedGymId
       ? `${this.baseUrl}/usersession/gym/${selectedGymId}`
       : `${this.baseUrl}/usersession`;
-    
+
     return this.http.get<any[]>(endpoint).pipe(
       map(sessions => {
         console.log('Raw sessions from API:', sessions);
-        
+
         // Create a map to store unique routes by routeId
         const uniqueRoutes = new Map<number, any>();
-        
+
         sessions.forEach(session => {
           const routeId = session.routeID ?? session.routeid;
           const sessionUserId = session.userID ?? session.userid;
-          
+
           // If we haven't seen this route yet, or if this is the current user's session, add/update it
           if (!uniqueRoutes.has(routeId) || sessionUserId === currentUserId) {
             uniqueRoutes.set(routeId, session);
           }
         });
-        
+
         // Convert map values back to array and map to Climb objects
         return Array.from(uniqueRoutes.values()).map(session => {
           console.log('Mapping session:', session);
@@ -95,11 +95,10 @@ export class ClimbService {
   }
 
   // ADMIN: edit existing climb (route data)
-  updateClimbAdmin(climb: Climb): Observable<any> {
-    const id = climb.climbId ?? climb.routeId;
-    return this.http.put(`${this.baseUrl}/climb/${id}`, climb); // PUT /climb/{id}
+  updateClimbAdmin(climb: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/Climb`, climb);
   }
-
+  
   // ADMIN: delete climb
   deleteClimb(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/climb/${id}`);
@@ -123,8 +122,8 @@ export class ClimbService {
       `${this.baseUrl}/UserRoute/${userId}/${routeId}/rating`
     );
   }
-  getGymID(){
-      return localStorage.getItem('selectedGymId');
+  getGymID() {
+    return localStorage.getItem('selectedGymId');
   }
 }
 

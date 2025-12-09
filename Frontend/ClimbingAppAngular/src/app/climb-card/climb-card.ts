@@ -20,7 +20,7 @@ export class ClimbCard {
   constructor(
     private router: Router,
     private climbService: ClimbService,
-    private authService: AuthService
+    public authService: AuthService
   ) {}
 
   @Input() climb!: Climb;

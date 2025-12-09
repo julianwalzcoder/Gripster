@@ -15,16 +15,18 @@
     </mat-menu>
 
     <span>Gripster</span>
+
     <span class="spacer" style="flex: 1 1 auto;"></span>
 
-    <button *ngIf="auth.isAdmin()" mat-raised-button color="accent" [matMenuTriggerFor]="adminMenu">
-      Admin
+    <button mat-raised-button color="primary" routerLink="/climbs/{{ climb.getGymID() }}">
+      Home
     </button>
 
-    <mat-menu #adminMenu="matMenu">
-      <button routerLink="/climb-add" mat-menu-item>Add Climb</button>
-      <button routerLink="/climb-edit" mat-menu-item>Edit Climb</button>
-    </mat-menu>
+    <span class="spacer" style="flex: 0 0 5px;"></span>
+
+    <button *ngIf="auth.isAdmin()" mat-raised-button color="accent" routerLink="/climb-add">
+      Add Climb
+    </button>
 
     <span class="spacer" style="flex: 0 0 5px;"></span>
 

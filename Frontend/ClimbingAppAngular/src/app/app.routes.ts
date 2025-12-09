@@ -8,12 +8,13 @@ import { Login } from './login/login';
 import { SelectGym } from './select-gym/select-gym';
 import { AddClimb } from './add-climb/add-climb';
 import { EditClimb } from './edit-climb/edit-climb';
-import { AdminGuard } from './guards/admin.guard'; 
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
 
   // All logged‑in users
   { path: 'login', component: Login },
+
   { path: 'climbs/:gymId', component: ClimbList, canActivate: [AuthGuard] },
   { path: 'climb-detail/:id', component: ClimbDetailComponent, canActivate: [AuthGuard] },
   { path: 'my-climbs', component: MyClimbs, canActivate: [AuthGuard] },
@@ -22,8 +23,9 @@ export const routes: Routes = [
 
   // Admin only
   { path: 'climb-add', component: AddClimb, canActivate: [AuthGuard, AdminGuard] },
-  { path: 'climb-edit', component: EditClimb, canActivate: [AuthGuard, AdminGuard] },
-
+  { path: 'climb/:id/edit', component: EditClimb, canActivate: [AuthGuard, AdminGuard] },
+ 
   // Default
   { path: '', redirectTo: '/climbs/1', pathMatch: 'full' },
+  { path: '**', redirectTo: 'climbs' }
 ];
