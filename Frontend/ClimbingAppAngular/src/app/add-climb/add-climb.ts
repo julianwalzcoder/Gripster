@@ -9,11 +9,7 @@ import { ClimbService } from '../services/climb-service';
 import { AuthService } from '../services/auth-service';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
-
-interface GymOption {
-    id: number;
-    name: string;
-}
+import { GymService, GymOption } from '../services/gym-service';
 
 interface GradeOption {
     id: number;      // This will be stored in the DB
@@ -47,19 +43,14 @@ export class AddClimb {
     constructor(
         private climbService: ClimbService, 
         private router: Router,
-        private authService: AuthService
+        private authService: AuthService,
+        private gymService: GymService
     ) { }
 
     currentAdmin: User = JSON.parse(localStorage.getItem('loggedInUser')!);
 
     // Form Controls
-    gyms: GymOption[] = [
-        { id: 1, name: 'CPH Sydhavn' },
-        { id: 2, name: 'CPH Vanløse' },
-        { id: 3, name: 'CPH Valby' },
-        { id: 4, name: 'CPH Østerbro' },
-        { id: 5, name: 'Malmö' }
-    ];
+    gyms: GymOption[] = []; // fetched from API
 
     grades: GradeOption[] = [
         { id: 1, display: '3', vScale: 'VB' },
@@ -87,7 +78,15 @@ export class AddClimb {
         removeDate: new FormControl<string | null>(null)
     });
 
-    ngOnInit() { }
+    ngOnInit() {
+        this.gymService.getGyms().subscribe({
+            next: (gyms) => this.gyms = gyms,
+            error: (err) => {
+                console.error('Failed to load gyms', err);
+                this.gyms = [];
+            }
+        });
+    }
 
     successMessage: string | null = null;
 

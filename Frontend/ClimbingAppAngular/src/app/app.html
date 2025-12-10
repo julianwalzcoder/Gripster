@@ -1,6 +1,6 @@
 <div class="app-container">
 
-  <mat-toolbar>
+  <mat-toolbar color="primary" class="app-toolbar">
     <button mat-icon-button class="example-icon" aria-label="Open main menu" [matMenuTriggerFor]="menu">
       <mat-icon>menu</mat-icon>
     </button>
@@ -9,13 +9,17 @@
 
     <mat-menu #menu="matMenu">
       <button routerLink="/climbs/{{ climb.getGymID() }}" mat-menu-item>Climbs</button>
-      <button routerLink="/my-projects" mat-menu-item>Sessions</button>
+      <button routerLink="/session-view" mat-menu-item>Sessions</button>
       <button routerLink="/my-climbs" mat-menu-item>My Climbs</button>
       <button routerLink="/my-projects" mat-menu-item>My Projects</button>
       <button routerLink="/select-gym" mat-menu-item>Change Gym</button>
     </mat-menu>
 
-    <span>Gripster</span>
+    <span class="toolbar-title">Gripster</span>
+    <span class="current-gym-inline" *ngIf="currentGymName as gym">
+      <mat-icon>location_on</mat-icon>
+      {{ gym }}
+    </span>
 
     <span class="spacer" style="flex: 1 1 auto;"></span>
 

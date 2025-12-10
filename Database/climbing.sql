@@ -736,6 +736,49 @@ ALTER TABLE ONLY public."UserRoute"
     CHECK ("Rating" IS NULL OR ("Rating" BETWEEN 1 AND 5));
 
 
+-- ============================================================================
+-- Session logging per user/route/date
+-- Creates immutable log entries; use this instead of the old Session table.
+-- ============================================================================
+
+-- Table: UserSessionRoute
+CREATE TABLE IF NOT EXISTS public."UserSessionRoute" (
+  "ID"        SERIAL PRIMARY KEY,
+  "UserID"    INTEGER NOT NULL REFERENCES public."User"("ID") ON DELETE CASCADE,
+  "RouteID"   INTEGER NOT NULL REFERENCES public."Route"("ID") ON DELETE CASCADE,
+  "Status"    VARCHAR(10) NOT NULL,  -- Attempted | Top | Flash
+  "LoggedAt"  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CHECK ("Status" IN ('Attempted','Top','Flash'))
+);
+
+-- Helpful indexes for common queries (by user/date and user/route/date)
+CREATE INDEX IF NOT EXISTS idx_usr_user_date
+  ON public."UserSessionRoute"("UserID","LoggedAt" DESC);
+
+CREATE INDEX IF NOT EXISTS idx_usr_user_route_date
+  ON public."UserSessionRoute"("UserID","RouteID","LoggedAt" DESC);
+
+-- Optional: Trigger to auto-log when UserRoute changes (insert/update)
+CREATE OR REPLACE FUNCTION public.log_userroute_change()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Write a log entry that mirrors the current status change
+  INSERT INTO public."UserSessionRoute"("UserID","RouteID","Status","LoggedAt")
+  VALUES (NEW."UserID", NEW."RouteID", NEW."Status", now());
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_log_userroute ON public."UserRoute";
+CREATE TRIGGER trg_log_userroute
+AFTER INSERT OR UPDATE ON public."UserRoute"
+FOR EACH ROW
+EXECUTE FUNCTION public.log_userroute_change();
+
+-- ============================================================================
+-- End session logging additions
+-- ============================================================================
+
 --
 -- PostgreSQL database dump complete
 --

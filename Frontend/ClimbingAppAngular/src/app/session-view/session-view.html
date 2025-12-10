@@ -1,5 +1,12 @@
-      <div class="session-routes">
-        <div *ngFor="let r of routesBySession[s.id]">
-          Route {{ r.routeId }} — Tries: {{ r.tries ?? 'n/a' }} — Status: {{ r.status ?? 'n/a' }}
-        </div>
+<div class="session-view">
+  <h2>Session View</h2>
+  <div *ngFor="let d of days" class="session-day">
+    <h3>{{ d.date }}</h3>
+    <div class="session-routes">
+      <div *ngIf="d.routes.length === 0">No routes for this day</div>
+      <div *ngFor="let r of d.routes">
+        Route {{ r.routeId }} — Status: {{ r.status ?? 'n/a' }}
       </div>
+    </div>
+  </div>
+</div>

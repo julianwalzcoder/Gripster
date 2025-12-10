@@ -15,4 +15,8 @@ export class GymService {
   getGyms(): Observable<GymOption[]> {
     return this.http.get<GymOption[]>(`${this.baseUrl}/api/gym`);
   }
+
+  getGym(id: number): Observable<GymOption> {
+    return this.http.get<GymOption>(`${this.baseUrl}/api/gym/${id}`);
+  }
 }

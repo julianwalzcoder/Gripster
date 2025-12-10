@@ -16,6 +16,13 @@ export interface SessionRouteItem {
   status?: string | null;
 }
 
+export interface UserSessionRoute {
+  userID: number;
+  routeID: number;
+  status: 'Attempted' | 'Top' | 'Flash';
+  loggedAt: string; // ISO timestamp
+}
+
 @Injectable({ providedIn: 'root' })
 export class SessionService {
   private baseUrl = 'http://localhost:5098';
@@ -36,5 +43,10 @@ export class SessionService {
 
   upsertSessionRoute(sessionId: number, payload: { userId: number; routeId: number; tries?: number | null; status?: string | null }): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/api/session/${sessionId}/routes`, payload);
+  }
+
+  // Current user's session logs (from UserSessionRoute table)
+  getMySessionLogs(): Observable<UserSessionRoute[]> {
+    return this.http.get<UserSessionRoute[]>(`${this.baseUrl}/SessionLog/me`);
   }
 }

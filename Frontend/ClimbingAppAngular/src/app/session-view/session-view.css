@@ -1,0 +1,9 @@
+.session-view {
+  padding: 12px;
+}
+.session-day {
+  margin-bottom: 16px;
+}
+.session-routes > div {
+  padding: 4px 0;
+}

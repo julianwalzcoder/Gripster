@@ -14,12 +14,14 @@ namespace ClimbingApp.API.Controllers
         protected UserRouteRepository Repository { get; }
         protected UserRepository UserRepository { get; }
         protected ClimbRepository ClimbRepository { get; }
+        protected UserSessionRouteRepository _userSessionRouteRepository { get; }
 
-        public UserRouteController(UserRouteRepository repository, UserRepository userRepository, ClimbRepository climbRepository)
+        public UserRouteController(UserRouteRepository repository, UserRepository userRepository, ClimbRepository climbRepository, UserSessionRouteRepository userSessionRouteRepository)
         {
             Repository = repository;
             UserRepository = userRepository;
             ClimbRepository = climbRepository;
+            _userSessionRouteRepository = userSessionRouteRepository;
         }
 
         [HttpGet("{userId}/{routeId}")]
@@ -104,29 +106,20 @@ namespace ClimbingApp.API.Controllers
         }
         
         [HttpPost("{userId}/{routeId}/status/{status}")]
-        public ActionResult InsertUserRouteByID([FromRoute] int userId, [FromRoute] int routeId, [FromRoute] string status)
+        public ActionResult InsertUserRouteByID(int userId, int routeId, string status)
         {
-            // Validate that User exists
             var user = UserRepository.GetUserById(userId);
-            if (user == null)
-            {
-                return BadRequest($"User with ID {userId} does not exist");
-            }
-            
-            // Validate that Route exists
+            if (user == null) return BadRequest($"User with ID {userId} does not exist");
             var route = ClimbRepository.GetRouteById(routeId);
-            if (route == null)
-            {
-                return BadRequest($"Route with ID {routeId} does not exist");
-            }
-            
-            // This will insert or update (upsert)
-            bool result = Repository.InsertUserRouteByID(userId, routeId, status);
-            if (result)
-            {
-                return Ok(new { message = "UserRoute created or updated successfully" });
-            }
-            return BadRequest("Something went wrong");
+            if (route == null) return BadRequest($"Route with ID {routeId} does not exist");
+
+            var ok = Repository.InsertUserRouteByID(userId, routeId, status);
+            if (!ok) return BadRequest("Something went wrong");
+
+            // also log the action
+            _userSessionRouteRepository.Insert(userId, routeId, status);
+
+            return Ok(new { message = "UserRoute updated and session logged" });
         }
 
         [HttpPost("{userId}/{routeId}/rating")]
