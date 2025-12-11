@@ -40,6 +40,25 @@ public class AdminRepository : BaseRepository
         }
     }
     
+    public Admin? GetByUserId(int userId)
+    {
+        using var db = new NpgsqlConnection(ConnectionString);
+        using var cmd = db.CreateCommand();
+        cmd.CommandText = @"SELECT ""ID"", ""UserID"", ""GymID""
+                            FROM ""Admin"" WHERE ""UserID"" = @uid";
+        cmd.Parameters.AddWithValue("@uid", NpgsqlDbType.Integer, userId);
+        using var r = GetData(db, cmd);
+        if (r != null && r.Read())
+        {
+            return new Admin(r.GetInt32(0))
+            {
+                UserID = r.GetInt32(1),
+                GymID = r.GetInt32(2)
+            };
+        }
+        return null;
+    }
+    
     public List<Admin> GetAdmins()
     {
         NpgsqlConnection dbConn = null;

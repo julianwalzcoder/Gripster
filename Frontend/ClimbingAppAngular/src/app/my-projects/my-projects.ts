@@ -47,10 +47,7 @@ export class MyProjects {
     loadMyClimbs(): void {
       this.climbService.getClimbs().subscribe({
         next: (climbs) => {
-          // Filter to only show climbs with Attempted status
-          this.climbs = climbs.filter(climb => 
-            climb.status === 'Attempted'
-          );
+          this.climbs = climbs.filter(climb => (climb.status ?? '') === 'Attempted');
           this.filteredClimbs = this.climbs;
           this.extractAvailableGrades();
           this.applyFilters();
@@ -62,14 +59,16 @@ export class MyProjects {
     }
   
     extractAvailableGrades(): void {
-      const grades = new Set(this.climbs.map(c => c.grade));
-      this.availableGrades = ['all', ...Array.from(grades).sort()];
+      const grades = new Set(this.climbs.map(c => (c.grade ?? '')));
+      this.availableGrades = ['all', ...Array.from(grades).sort().filter(g => g !== '')];
     }
   
     applyFilters(): void {
       this.filteredClimbs = this.climbs.filter(climb => {
-        const statusMatch = this.selectedStatus === 'all' || climb.status === this.selectedStatus;
-        const gradeMatch = this.selectedGrade === 'all' || climb.grade === this.selectedGrade;
+        const status = climb.status ?? '';
+        const grade = climb.grade ?? '';
+        const statusMatch = this.selectedStatus === 'all' || status === this.selectedStatus;
+        const gradeMatch = this.selectedGrade === 'all' || grade === this.selectedGrade;
         return statusMatch && gradeMatch;
       });
     }
@@ -102,4 +101,4 @@ export class MyProjects {
       }
     }
   }
-  
+

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormBuilder, AbstractControl, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ClimbService } from '../services/climb-service';
@@ -10,12 +10,8 @@ import { AuthService } from '../services/auth-service';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { GymService, GymOption } from '../services/gym-service';
-
-interface GradeOption {
-    id: number;      // This will be stored in the DB
-    display: string; // French grade
-    vScale: string;  // V-scale equivalent
-}
+import { GradeService, GradeOption } from '../services/grade-service';
+import type { AddClimbRequest } from '../services/climb-service';
 
 interface User {
     id: number;
@@ -44,26 +40,16 @@ export class AddClimb {
         private climbService: ClimbService, 
         private router: Router,
         private authService: AuthService,
-        private gymService: GymService
+        private gymService: GymService,
+        private gradeService: GradeService,
+        private fb: FormBuilder
     ) { }
 
     currentAdmin: User = JSON.parse(localStorage.getItem('loggedInUser')!);
 
     // Form Controls
     gyms: GymOption[] = []; // fetched from API
-
-    grades: GradeOption[] = [
-        { id: 1, display: '3', vScale: 'VB' },
-        { id: 2, display: '4', vScale: 'V0' },
-        { id: 3, display: '5', vScale: 'V1' },
-        { id: 4, display: '6A', vScale: 'V2' },
-        { id: 5, display: '6B', vScale: 'V3' },
-        { id: 6, display: '6C', vScale: 'V4' },
-        { id: 7, display: '7A', vScale: 'V5' },
-        { id: 8, display: '7B', vScale: 'V6' },
-        { id: 9, display: '7C', vScale: 'V7' },
-        { id: 10, display: '8A', vScale: 'V8' }
-    ];
+    grades: GradeOption[] = []; // fetched from API
 
     gradingScaleControl = new FormControl('French'); // default
     gradeControl = new FormControl(null, Validators.required);
@@ -71,14 +57,40 @@ export class AddClimb {
     setDate: FormControl<string | null> = new FormControl(new Date().toISOString().substring(0, 10));
     removeDate: FormControl<string | null> = new FormControl(null);
 
-    climbFormGroup: FormGroup = new FormGroup({
-        gymId: new FormControl<number | null>(null, [Validators.required]),
-        gradeId: new FormControl<number | null>(null, [Validators.required]),
-        setDate: new FormControl<string | null>(null),
-        removeDate: new FormControl<string | null>(null)
-    });
+    climbFormGroup!: FormGroup;
 
-    ngOnInit() {
+    private parseDate(value: string | Date | null | undefined): Date | null {
+        if (!value) return null;
+        const d = new Date(value);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    private dateOrderValidator: ValidatorFn = (control: AbstractControl) => {
+        const group = control as FormGroup;
+        const setDate = this.parseDate(group.get('setDate')?.value);
+        const removeCtrl = group.get('removeDate');
+        const removeDate = this.parseDate(removeCtrl?.value);
+
+        removeCtrl?.setErrors(null);
+
+        if (!setDate || !removeDate) return null;
+
+        if (removeDate < setDate) {
+            removeCtrl?.setErrors({ dateOrder: true });
+            return { dateOrder: true };
+        }
+        return null;
+    };
+
+    ngOnInit(): void {
+        this.climbFormGroup = this.fb.group({
+            gymId: [null, Validators.required],
+            gradeId: [null, Validators.required],
+            setDate: [this.todayYmd()],
+            removeDate: [null]
+        });
+        this.climbFormGroup.addValidators(this.dateOrderValidator);
+
         this.gymService.getGyms().subscribe({
             next: (gyms) => this.gyms = gyms,
             error: (err) => {
@@ -86,39 +98,44 @@ export class AddClimb {
                 this.gyms = [];
             }
         });
+
+        this.gradeService.getGrades().subscribe({
+            next: (grades) => this.grades = grades,
+            error: (err) => {
+                console.error('Failed to load grades', err);
+                this.grades = [];
+            }
+        });
     }
 
     successMessage: string | null = null;
 
-    addClimb() {
-        if (!this.climbFormGroup.valid) return;
-        
-        const adminId = this.authService.getAdminId();
-        if (!adminId) {
-            console.error('No admin ID found. Please ensure you are logged in as an admin.');
-            return;
-        }
+    addClimb(): void {
+        if (this.climbFormGroup.invalid || this.climbFormGroup.hasError('dateOrder')) return;
 
         const formValue = this.climbFormGroup.value;
 
-        this.climbService.addClimb({
+        const payload: AddClimbRequest = {
             routeId: 0,
-            gymId: formValue.gymId!,
-            gradeId: formValue.gradeId!,
-            grade: formValue.grade!,
+            gymId: Number(formValue.gymId),
+            gradeId: Number(formValue.gradeId),
             status: '',
-            setDate: formValue.setDate ? new Date(formValue.setDate) : undefined as unknown as Date,
-            removeDate: formValue.removeDate ? new Date(formValue.removeDate) : undefined as unknown as Date,
-            adminId: adminId
-        }).subscribe({
+            setDate: formValue.setDate ? new Date(formValue.setDate).toISOString() : null,
+            removeDate: formValue.removeDate ? new Date(formValue.removeDate).toISOString() : null
+        };
+
+        this.climbService.addClimb(payload).subscribe({
             next: () => {
                 this.successMessage = 'Climb added successfully!';
-                // Redirect to climbs page for the selected gym
-                setTimeout(() => {
-                    this.router.navigate(['/climbs/', formValue.gymId]);
-                }, 1000);
+                setTimeout(() => this.router.navigate(['/climbs/', formValue.gymId]), 1000);
             },
             error: (err: any) => console.error('Error creating climb:', err)
         });
+    }
+
+    private todayYmd(): string {
+        const d = new Date();
+        const pad = (n: number) => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     }
 }

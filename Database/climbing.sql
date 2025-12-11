@@ -762,9 +762,11 @@ CREATE INDEX IF NOT EXISTS idx_usr_user_route_date
 CREATE OR REPLACE FUNCTION public.log_userroute_change()
 RETURNS TRIGGER AS $$
 BEGIN
-  -- Write a log entry that mirrors the current status change
-  INSERT INTO public."UserSessionRoute"("UserID","RouteID","Status","LoggedAt")
-  VALUES (NEW."UserID", NEW."RouteID", NEW."Status", now());
+  -- Only log when Status is present to satisfy NOT NULL constraint
+  IF NEW."Status" IS NOT NULL THEN
+    INSERT INTO public."UserSessionRoute"("UserID","RouteID","Status","LoggedAt")
+    VALUES (NEW."UserID", NEW."RouteID", NEW."Status", now());
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

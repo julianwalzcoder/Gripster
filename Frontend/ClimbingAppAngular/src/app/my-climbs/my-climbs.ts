@@ -29,14 +29,11 @@ import { Climb } from '../model/climb';
 export class MyClimbs implements OnInit {
   climbs: Climb[] = [];
   filteredClimbs: Climb[] = [];
-  
+
   selectedStatus: string = 'all';
   selectedGrade: string = 'all';
   availableGrades: string[] = [];
   availableStatuses: string[] = ['all', 'Top', 'Flash', 'Attempted'];
-  
-  // Current user ID (should come from auth service)
-  private readonly currentUserId = 1;
 
   constructor(private climbService: ClimbService) {}
 
@@ -47,10 +44,8 @@ export class MyClimbs implements OnInit {
   loadMyClimbs(): void {
     this.climbService.getClimbs().subscribe({
       next: (climbs) => {
-        // Filter to only show climbs with Top, Flash, or Attempted status
-        this.climbs = climbs.filter(climb => 
-          climb.status === 'Top' || 
-          climb.status === 'Flash'
+        this.climbs = climbs.filter(c =>
+          (c.status ?? '') === 'Top' || (c.status ?? '') === 'Flash'
         );
         this.filteredClimbs = this.climbs;
         this.extractAvailableGrades();
@@ -63,14 +58,16 @@ export class MyClimbs implements OnInit {
   }
 
   extractAvailableGrades(): void {
-    const grades = new Set(this.climbs.map(c => c.grade));
-    this.availableGrades = ['all', ...Array.from(grades).sort()];
+    const grades = new Set(this.climbs.map(c => (c.grade ?? '')));
+    this.availableGrades = ['all', ...Array.from(grades).sort().filter(g => g !== '')];
   }
 
   applyFilters(): void {
     this.filteredClimbs = this.climbs.filter(climb => {
-      const statusMatch = this.selectedStatus === 'all' || climb.status === this.selectedStatus;
-      const gradeMatch = this.selectedGrade === 'all' || climb.grade === this.selectedGrade;
+      const status = climb.status ?? '';
+      const grade = climb.grade ?? '';
+      const statusMatch = this.selectedStatus === 'all' || status === this.selectedStatus;
+      const gradeMatch = this.selectedGrade === 'all' || grade === this.selectedGrade;
       return statusMatch && gradeMatch;
     });
   }
@@ -92,9 +89,7 @@ export class MyClimbs implements OnInit {
   onDeleteClimb(id: number): void {
     if (confirm('Are you sure you want to delete this climb?')) {
       this.climbService.deleteClimb(id).subscribe({
-        next: () => {
-          this.loadMyClimbs();
-        },
+        next: () => this.loadMyClimbs(),
         error: (error) => {
           console.error('Error deleting climb:', error);
           alert('Failed to delete climb');

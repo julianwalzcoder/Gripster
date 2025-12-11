@@ -106,7 +106,20 @@ export class AuthService {
     }
 
     getAdminId(): number | null {
-        const adminId = localStorage.getItem('adminId');
-        return adminId ? Number(adminId) : null;
+        try {
+            const token = localStorage.getItem('jwtToken');
+            if (!token) return null;
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const idStr =
+                payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ??
+                payload['sub'];
+            const role =
+                payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? '';
+            const id = Number(idStr);
+            if (!id || role !== 'admin') return null;
+            return id;
+        } catch {
+            return null;
+        }
     }
 }

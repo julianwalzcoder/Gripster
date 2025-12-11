@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Climb } from '../model/climb';
+// Remove the conflicting import of Climb from model to avoid TS2440
+// import { Climb } from '../model/climb';
 import { AuthService } from './auth-service';
 
 @Injectable({
@@ -14,47 +15,36 @@ export class ClimbService {
 
   constructor(private http: HttpClient) { }
 
-  getClimbs(): Observable<Climb[]> {
+  getClimbs(): Observable<RouteDetails[]> {
     const currentUserId = this.authService.getCurrentUserId();
     const selectedGymId = localStorage.getItem('selectedGymId');
-
-    // If gym is selected, fetch sessions filtered by gym; otherwise fetch all
     const endpoint = selectedGymId
       ? `${this.baseUrl}/usersession/gym/${selectedGymId}`
       : `${this.baseUrl}/usersession`;
 
     return this.http.get<any[]>(endpoint).pipe(
       map(sessions => {
-        console.log('Raw sessions from API:', sessions);
-
-        // Create a map to store unique routes by routeId
         const uniqueRoutes = new Map<number, any>();
-
         sessions.forEach(session => {
           const routeId = session.routeID ?? session.routeid;
           const sessionUserId = session.userID ?? session.userid;
-
-          // If we haven't seen this route yet, or if this is the current user's session, add/update it
           if (!uniqueRoutes.has(routeId) || sessionUserId === currentUserId) {
             uniqueRoutes.set(routeId, session);
           }
         });
 
-        // Convert map values back to array and map to Climb objects
-        return Array.from(uniqueRoutes.values()).map(session => {
-          console.log('Mapping session:', session);
-          return {
-            userId: currentUserId, // Always use the current logged-in user's ID
-            routeId: session.routeID ?? session.routeid,
-            grade: session.gradeFbleau ?? session.gradefbleau,
-            status: session.status,
-            gymId: session.gymID ?? session.gymid,
-            setDate: session.setDate ?? session.setdate,
-            removeDate: session.removeDate ?? session.removedate,
-            adminId: session.adminID ?? session.adminid,
-            climbId: session.routeID ?? session.routeid
-          } as Climb;
-        });
+        return Array.from(uniqueRoutes.values()).map(session => ({
+          userId: currentUserId,
+          routeId: session.routeID ?? session.routeid,
+          gradeId: (session.gradeID ?? session.gradeid ?? undefined) as number | undefined, // map to undefined
+          grade: session.gradeFbleau ?? session.gradefbleau,
+          status: session.status,
+          gymId: session.gymID ?? session.gymid,
+          setDate: session.setDate ?? session.setdate ?? null,
+          removeDate: session.removeDate ?? session.removedate ?? null,
+          adminId: session.adminID ?? session.adminid,
+          climbId: session.routeID ?? session.routeid
+        } as RouteDetails));
       })
     );
   }
@@ -65,38 +55,45 @@ export class ClimbService {
     );
   }
 
-  getClimb(id: number): Observable<Climb> {
-    return this.http.get<any[]>(`${this.baseUrl}/usersession`).pipe(
-      map(sessions => {
-        console.log('All sessions:', sessions);
-        const session = sessions.find(s => (s.routeID ?? s.routeid) === id);
-        if (!session) {
-          throw new Error('Climb not found');
-        }
-        console.log('Found session:', session);
+  getClimb(id: number): Observable<RouteDetails> {
+    const session$ = this.http.get<any[]>(`${this.baseUrl}/usersession`);
+    const route$ = this.http.get<any>(`${this.baseUrl}/api/route/${id}`);
+
+    return forkJoin({ sessions: session$, route: route$ }).pipe(
+      map(({ sessions, route }) => {
+        const s = sessions.find(x => (x.routeID ?? x.routeid) === id);
+        if (!s) throw new Error('Climb not found');
+
         return {
-          userId: session.userID ?? session.userid,
-          routeId: session.routeID ?? session.routeid,
-          grade: session.gradeFbleau ?? session.gradefbleau,
-          status: session.status,
-          gymId: session.gymID ?? session.gymid,
-          setDate: session.setDate ?? session.setdate,
-          removeDate: session.removeDate ?? session.removedate,
-          adminId: session.adminID ?? session.adminid,
-          climbId: session.routeID ?? session.routeid
-        };
+          routeId: s.routeID ?? s.routeid,
+          gymId: s.gymID ?? s.gymid,
+          gradeId: (s.gradeID ?? s.gradeid ?? route?.gradeID ?? route?.GradeID ?? undefined) as number | undefined,
+          grade: s.gradeFbleau ?? s.gradefbleau ?? null,
+          status: s.status ?? null,
+          setDate: route?.setDate ?? route?.SetDate ?? s.setDate ?? s.setdate ?? null,
+          removeDate: route?.removeDate ?? route?.RemoveDate ?? s.removeDate ?? s.removedate ?? null,
+          adminId: s.adminID ?? s.adminid ?? null,
+          climbId: s.routeID ?? s.routeid
+        } as RouteDetails;
       })
     );
   }
 
   // ADMIN: create new climb (route)
-  addClimb(climb: Climb): Observable<any> {
-    return this.http.post(`${this.baseUrl}/climb`, climb); // POST /climb
+  addClimb(payload: AddClimbRequest) {
+    return this.http.post<void>(`${this.baseUrl}/api/route`, payload);
   }
 
   // ADMIN: edit existing climb (route data)
-  updateClimbAdmin(climb: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/Climb`, climb);
+  updateClimbAdmin(dto: {
+    id: number;
+    gymID: number;
+    gradeID: number;
+    setDate: string | null;
+    removeDate: string | null;
+    adminID: number;
+  }) {
+    return this.http.put<void>(`${this.baseUrl}/api/route/${dto.id}`, dto);
   }
   
   // ADMIN: delete climb
@@ -125,5 +122,39 @@ export class ClimbService {
   getGymID() {
     return localStorage.getItem('selectedGymId');
   }
+}
+
+// Rename local interface to avoid conflict with imported Climb
+export interface RouteDetails {
+  routeId: number;
+  gymId: number;
+  gradeId: number | undefined;  // change to undefined to match Climb
+  grade: string | null;
+  status: string | null;
+  setDate: string | null;
+  removeDate: string | null;
+  adminId: number | null;
+  climbId: number;
+}
+
+export interface AddClimbRequest {
+  routeId: number;
+  gymId: number;
+  gradeId: number;
+  setDate: string | null;
+  removeDate: string | null;
+  status?: string;
+}
+
+export interface Climb {
+  routeId: number;
+  gymId: number;
+  gradeId: number | null;  // numeric ID
+  grade: string | null;    // display text like "6b"
+  status: string | null;
+  setDate: string | null;
+  removeDate: string | null;
+  adminId: number | null;
+  climbId: number;
 }
 

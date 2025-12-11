@@ -68,8 +68,7 @@ export class ClimbDetailComponent implements OnInit {
     console.log('Fetching climb with ID:', this.climbID);
     this.climbService.getClimb(this.climbID).subscribe({
       next: (climb) => {
-        console.log('Climb data received:', climb);
-        this.climb = climb;
+        this.climb = { ...climb, grade: climb.grade ?? '' }; // coerce null to ''
         this.loading = false;
       },
       error: (error) => {

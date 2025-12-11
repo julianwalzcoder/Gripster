@@ -57,14 +57,16 @@ export class ClimbList implements OnInit {
   }
 
   extractAvailableGrades(): void {
-    const grades = new Set(this.climbs.map(c => c.grade));
-    this.availableGrades = ['all', ...Array.from(grades).sort()];
+    const grades = new Set(this.climbs.map(c => (c.grade ?? '')));
+    this.availableGrades = ['all', ...Array.from(grades).sort().filter(g => g !== '')];
   }
 
   applyFilters(): void {
     this.filteredClimbs = this.climbs.filter(climb => {
-      const statusMatch = this.selectedStatus === 'all' || climb.status === this.selectedStatus;
-      const gradeMatch = this.selectedGrade === 'all' || climb.grade === this.selectedGrade;
+      const climbGrade = climb.grade ?? '';
+      const climbStatus = climb.status ?? '';
+      const statusMatch = this.selectedStatus === 'all' || climbStatus === this.selectedStatus;
+      const gradeMatch = this.selectedGrade === 'all' || climbGrade === this.selectedGrade;
       return statusMatch && gradeMatch;
     });
   }

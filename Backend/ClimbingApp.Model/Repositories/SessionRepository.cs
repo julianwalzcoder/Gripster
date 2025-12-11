@@ -75,6 +75,7 @@ public class SessionRepository : BaseRepository
         }
     }
     
+    //Is this needed?
     public bool InsertSession(Session s)
     {
         NpgsqlConnection dbConn = null;
@@ -92,7 +93,7 @@ values
             cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, s.RouteID);
             cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Text, (object?)s.Status ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@loggedat", NpgsqlDbType.Timestamp, s.LoggedAt);
-            
+
             bool result = InsertData(dbConn, cmd);
             return result;
         }

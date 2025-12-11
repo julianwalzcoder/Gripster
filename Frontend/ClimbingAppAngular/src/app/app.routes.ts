@@ -26,7 +26,8 @@ export const routes: Routes = [
   // Admin only
   { path: 'climb-add', component: AddClimb, canActivate: [AuthGuard, AdminGuard] },
   { path: 'climb-edit', component: EditClimb, canActivate: [AuthGuard, AdminGuard] },
- 
+  { path: 'climb/:id/edit', loadComponent: () => import('./edit-climb/edit-climb').then(c => c.EditClimb) },
+
   // Default
   { path: '', redirectTo: '/climbs/1', pathMatch: 'full' },
   { path: '**', redirectTo: 'climbs' }
