@@ -17,7 +17,7 @@ public class SessionRepository : BaseRepository
         {
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "select * from \"Session\" where \"ID\" = @id";
+            cmd.CommandText = "select * from \"UserSessionRoute\" where \"UserID\" = @id";
             cmd.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
             
             var data = GetData(dbConn, cmd);
@@ -27,9 +27,9 @@ public class SessionRepository : BaseRepository
                 {
                     ID = Convert.ToInt32(data["ID"]),
                     UserID = Convert.ToInt32(data["UserID"]),
-                    CustomName = data["CustomName"] == DBNull.Value ? null : data["CustomName"].ToString(),
-                    Date = Convert.ToDateTime(data["Date"]),
-                    Feedback = data["Feedback"] == DBNull.Value ? null : data["Feedback"].ToString()
+                    RouteID = Convert.ToInt32(data["RouteID"]),
+                    Status = data["Status"] == DBNull.Value ? null : data["Status"].ToString(),
+                    LoggedAt = Convert.ToDateTime(data["LoggedAt"]),
                 };
                 return s;
             }
@@ -49,7 +49,7 @@ public class SessionRepository : BaseRepository
         {
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "select * from \"Session\"";
+            cmd.CommandText = "select * from \"UserSessionRoute\"";
             
             var data = GetData(dbConn, cmd);
             if (data != null)
@@ -60,9 +60,9 @@ public class SessionRepository : BaseRepository
                     {
                         ID = Convert.ToInt32(data["ID"]),
                         UserID = Convert.ToInt32(data["UserID"]),
-                        CustomName = data["CustomName"] == DBNull.Value ? null : data["CustomName"].ToString(),
-                        Date = Convert.ToDateTime(data["Date"]),
-                        Feedback = data["Feedback"] == DBNull.Value ? null : data["Feedback"].ToString()
+                        RouteID = Convert.ToInt32(data["RouteID"]),
+                        Status = data["Status"] == DBNull.Value ? null : data["Status"].ToString(),
+                        LoggedAt = Convert.ToDateTime(data["LoggedAt"])
                     };
                     sessions.Add(s);
                 }
@@ -83,15 +83,15 @@ public class SessionRepository : BaseRepository
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
             cmd.CommandText = @"
-insert into ""Session""
-(""UserID"", ""CustomName"", ""Date"", ""Feedback"")
+insert into ""UserSessionRoute""
+(""UserID"", ""RouteID"", ""Status"", ""LoggedAt"")
 values
-(@userid, @customname, @date, @feedback)
+(@userid, @routeid, @status, @loggedat)
 ";
             cmd.Parameters.AddWithValue("@userid", NpgsqlDbType.Integer, s.UserID);
-            cmd.Parameters.AddWithValue("@customname", NpgsqlDbType.Text, s.CustomName);
-            cmd.Parameters.AddWithValue("@date", NpgsqlDbType.Date, s.Date);
-            cmd.Parameters.AddWithValue("@feedback", NpgsqlDbType.Text, s.Feedback);
+            cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, s.RouteID);
+            cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Text, (object?)s.Status ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@loggedat", NpgsqlDbType.Timestamp, s.LoggedAt);
             
             bool result = InsertData(dbConn, cmd);
             return result;
@@ -107,17 +107,17 @@ values
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
         cmd.CommandText = @"
-update ""Session"" set
+update ""UserSessionRoute"" set
 ""UserID""=@userid,
-""CustomName""=@customname,
-""Date""=@date,
-""Feedback""=@feedback
+""RouteID""=@routeid,
+""Status""=@status,
+""LoggedAt""=@loggedat
 where
 ""ID"" = @id";
         cmd.Parameters.AddWithValue("@userid", NpgsqlDbType.Integer, s.UserID);
-        cmd.Parameters.AddWithValue("@customname", NpgsqlDbType.Text, (object?)s.CustomName ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@date", NpgsqlDbType.Date, s.Date);
-        cmd.Parameters.AddWithValue("@feedback", NpgsqlDbType.Text, (object?)s.Feedback ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, s.RouteID);
+        cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Text, (object?)s.Status ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@loggedat", NpgsqlDbType.Timestamp, s.LoggedAt);
         cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, s.ID);
 
         bool result = UpdateData(dbConn, cmd);
@@ -129,7 +129,7 @@ where
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
         cmd.CommandText = @"
-delete from ""Session""
+delete from ""UserSessionRoute""
 where ""ID"" = @id
 ";
         cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
@@ -143,7 +143,7 @@ where ""ID"" = @id
         var list = new List<Session>();
         using var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
-        cmd.CommandText = @"SELECT ""ID"",""UserID"",""CustomName"",""Date"",""Feedback"" FROM ""Session"" WHERE ""UserID""=@uid ORDER BY ""Date"" DESC";
+        cmd.CommandText = @"SELECT ""ID"",""UserID"",""RouteID"",""Status"",""LoggedAt"" FROM ""UserSessionRoute"" WHERE ""UserID""=@uid ORDER BY ""LoggedAt"" DESC";
         cmd.Parameters.AddWithValue("@uid", NpgsqlDbType.Integer, userId);
         var r = GetData(dbConn, cmd);
         if (r != null)
@@ -154,9 +154,9 @@ where ""ID"" = @id
                 {
                     ID = (int)r["ID"],
                     UserID = (int)r["UserID"],
-                    CustomName = r["CustomName"] == DBNull.Value ? null : r["CustomName"].ToString(),
-                    Date = (DateTime)r["Date"],
-                    Feedback = r["Feedback"] == DBNull.Value ? null : r["Feedback"].ToString()
+                    RouteID = (int)r["RouteID"],
+                    Status = r["Status"] == DBNull.Value ? null : r["Status"].ToString(),
+                    LoggedAt = (DateTime)r["LoggedAt"]
                 };
                 list.Add(s);
             }
@@ -164,18 +164,18 @@ where ""ID"" = @id
         return list;
     }
 
-    public int CreateSession(int userId, DateTime date, string? name, string? feedback)
+    public int CreateSession(int userId, int routeId, string? status, DateTime loggedAt)
     {
         using var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
         cmd.CommandText = @"
-INSERT INTO ""Session"" (""UserID"",""CustomName"",""Date"",""Feedback"")
-VALUES (@uid,@name,@date,@fb)
+INSERT INTO ""UserSessionRoute"" (""UserID"",""RouteID"",""Status"",""LoggedAt"")
+VALUES (@uid,@routeid,@status,@loggedat)
 RETURNING ""ID""";
         cmd.Parameters.AddWithValue("@uid", NpgsqlDbType.Integer, userId);
-        cmd.Parameters.AddWithValue("@name", NpgsqlDbType.Text, (object?)name ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@date", NpgsqlDbType.Date, date);
-        cmd.Parameters.AddWithValue("@fb", NpgsqlDbType.Text, (object?)feedback ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@routeid", NpgsqlDbType.Integer, routeId);
+        cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Text, (object?)status ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@loggedat", NpgsqlDbType.Timestamp, loggedAt);
         var reader = GetData(dbConn, cmd);
         if (reader != null && reader.Read()) return (int)reader["ID"];
         return 0;

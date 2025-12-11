@@ -1,11 +1,29 @@
 <div class="session-view">
-  <h2>Session View</h2>
-  <div *ngFor="let d of days" class="session-day">
-    <h3>{{ d.date }}</h3>
-    <div class="session-routes">
-      <div *ngIf="d.routes.length === 0">No routes for this day</div>
-      <div *ngFor="let r of d.routes">
-        Route {{ r.routeId }} — Status: {{ r.status ?? 'n/a' }}
+  <div class="header">
+    <h2>My Sessions</h2>
+  </div>
+  
+  <div class="sessions-container">
+    <div *ngFor="let d of days" class="session-card">
+      <div class="session-header">
+        <h3 class="session-date">{{ d.date | date:'fullDate' }}</h3>
+        <span class="route-count">{{ d.routes.length }} route{{ d.routes.length !== 1 ? 's' : '' }}</span>
+      </div>
+      
+      <div class="session-routes">
+        <div *ngIf="d.routes.length === 0" class="empty-state">
+          <span class="empty-icon">📋</span>
+          <p>No routes logged for this day</p>
+        </div>
+        
+        <div *ngFor="let r of d.routes" class="route-item">
+          <div class="route-info" [routerLink]="['/climb-detail', r.routeId]">
+            <span class="route-id">Route #{{ r.routeId }}</span>
+            <span class="route-status" [ngClass]="getStatusClass(r.status)">
+              {{ getStatusDisplay(r.status) }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>

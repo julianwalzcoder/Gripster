@@ -28,7 +28,7 @@ public class Session
     }
 
     public int UserID { get; set; }
-    public string? CustomName { get; set; }
-    public DateTime Date { get; set; }
-    public string? Feedback { get; set; }
+    public int RouteID { get; set; }
+    public string? Status { get; set; }
+    public DateTime LoggedAt { get; set; }
 }

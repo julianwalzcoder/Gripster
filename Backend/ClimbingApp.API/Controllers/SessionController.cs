@@ -42,15 +42,21 @@ namespace ClimbingApp.API.Controllers
         public ActionResult<IEnumerable<object>> GetSessionsByUser(int userId)
         {
             var sessions = _sessions.GetSessionsByUser(userId)
-                .Select(s => new { id = s.ID, date = s.Date, name = s.CustomName, feedback = s.Feedback });
+                .Select(s => new { 
+                    id = s.ID, 
+                    userId = s.UserID,
+                    routeId = s.RouteID, 
+                    status = s.Status,
+                    loggedAt = s.LoggedAt 
+                });
             return Ok(sessions);
         }
 
         [HttpPost]
         public ActionResult<object> CreateSession([FromBody] CreateSessionRequest req)
         {
-            if (req.UserId <= 0 || req.Date == default) return BadRequest("Invalid payload");
-            var id = _sessions.CreateSession(req.UserId, req.Date, req.Name, req.Feedback);
+            if (req.UserId <= 0 || req.RouteId <= 0) return BadRequest("Invalid payload");
+            var id = _sessions.CreateSession(req.UserId, req.RouteId, req.Status, req.LoggedAt);
             if (id <= 0) return BadRequest("Failed to create session");
             return Ok(new { id });
         }
@@ -124,9 +130,9 @@ namespace ClimbingApp.API.Controllers
     public class CreateSessionRequest
     {
         public int UserId { get; set; }
-        public DateTime Date { get; set; }
-        public string? Name { get; set; }
-        public string? Feedback { get; set; }
+        public int RouteId { get; set; }
+        public string? Status { get; set; }
+        public DateTime LoggedAt { get; set; }
     }
 
     public class SessionRouteItem

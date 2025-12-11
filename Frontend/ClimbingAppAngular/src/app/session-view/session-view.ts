@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { SessionService, SessionItem, SessionRouteItem, UserSessionRoute } from '../services/session-service';
 import { AuthService } from '../services/auth-service';
 
@@ -11,7 +12,7 @@ interface DayView {
 @Component({
   selector: 'app-session-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './session-view.html',
   styleUrl: './session-view.css'
 })
@@ -24,39 +25,31 @@ export class SessionView {
     const userId = this.auth.getCurrentUserId();
     if (!userId) return;
 
+    this.loadSessionLogs(userId);
+  }
+
+  private loadSessionLogs(userId: number) {
     this.sessionService.getSessionsForUser(userId).subscribe({
-      next: (sessions: SessionItem[]) => {
-        console.log('Sessions:', sessions);
-        // Initialize days from sessions
-        this.days = sessions
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .map(s => ({ date: s.date, routes: [] }));
-
-        let anyRoutes = false;
-
-        // For each session, load its routes and attach to the corresponding day
-        sessions.forEach(s => {
-          this.sessionService.getSessionRoutes(s.id).subscribe({
-            next: (routes: SessionRouteItem[]) => {
-              console.log(`Routes for session ${s.id}:`, routes);
-              const day = this.days.find(d => d.date === s.date);
-              if (!day) return;
-              const mapped = routes.map(r => ({ routeId: r.routeId, status: r.status ?? null }));
-              day.routes = mapped;
-              if (mapped.length > 0) anyRoutes = true;
-            },
-            error: (err: any) => console.warn(`Failed to load routes for session ${s.id}`, err)
-          });
+      next: (logs: any[]) => {
+        console.log('Session logs:', logs);
+        // Group logs by date (extract date from loggedAt)
+        const byDate = new Map<string, { routeId: number; status?: string | null }[]>();
+        logs.forEach(l => {
+          // Extract date portion from loggedAt (format: YYYY-MM-DD)
+          const date = l.loggedAt ? new Date(l.loggedAt).toISOString().substring(0, 10) : null;
+          if (!date) return;
+          const arr = byDate.get(date) ?? [];
+          arr.push({ routeId: l.routeId, status: l.status });
+          byDate.set(date, arr);
         });
-
-        // After a short delay, if no routes were attached, fallback to session logs
-        setTimeout(() => {
-          if (!anyRoutes) {
-            this.loadFromLogs();
-          }
-        }, 300);
+        // Build days sorted by date desc
+        this.days = Array.from(byDate.entries())
+          .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
+          .map(([date, routes]) => ({ date, routes }));
+        
+        console.log('Processed days:', this.days);
       },
-      error: (err: any) => console.error('Failed to load sessions', err)
+      error: (err: any) => console.error('Failed to load session logs', err)
     });
   }
 
@@ -81,5 +74,18 @@ export class SessionView {
       },
       error: (err: any) => console.error('Failed to load session logs', err)
     });
+  }
+
+  getStatusClass(status: string | null | undefined): string {
+    if (!status) return 'status-default';
+    const normalized = status.toLowerCase();
+    if (normalized === 'flash') return 'status-flash';
+    if (normalized === 'top') return 'status-top';
+    if (normalized === 'attempted') return 'status-attempted';
+    return 'status-default';
+  }
+
+  getStatusDisplay(status: string | null | undefined): string {
+    return status ?? 'Not Set';
   }
 }
