@@ -22,8 +22,7 @@ import { GymService, GymOption } from '../services/gym-service';
     templateUrl: './select-gym.html',
     styleUrl: './select-gym.css'
 })
-export class SelectGym {
-
+export class SelectGymComponent {
     gyms: GymOption[] = [];
 
     gymControl = new FormControl<number | null>(null, [Validators.required]);
@@ -53,13 +52,18 @@ export class SelectGym {
     saveGym() {
         if (this.form.invalid || this.gymControl.value == null) return;
 
-        localStorage.setItem('selectedGymId', String(this.gymControl.value));
+        const id = Number(this.gymControl.value);
+        const gym = this.gyms.find(g => g.id === id);
+        const name = gym?.name ?? 'All Gyms';
 
-        // Navigate to climbs page - the service will read selectedGymId from localStorage
-        this.router.navigate(['/climbs/', this.gymControl.value]);
+        this.gymService.setSelectedGym(id, name); // update reactive state + persist both
+        this.router.navigate(['/climbs', id]);
+    }
+
+    onSelect(gym: GymOption) {
+        this.gymService.setSelectedGym(gym.id, gym.name);
+        this.router.navigate(['/climbs', gym.id]);
     }
 }
-
-export class AppComponent { }
 
 

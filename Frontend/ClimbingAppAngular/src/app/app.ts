@@ -1,44 +1,34 @@
-import { Component, signal } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { ClimbCard } from './climb-card/climb-card';
-import { ClimbList } from './climb-list/climb-list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
-import { AuthService } from './services/auth-service';
-import { ClimbService } from './services/climb-service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { GymService } from './services/gym-service';
-import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth-service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, ClimbCard, ClimbList, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, CommonModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule, MatToolbarModule, MatMenuModule, MatIconModule, MatButtonModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class AppComponent {
-  public currentGymName: string | null = null;
+  currentGymName = 'All Gyms';
+  currentGymId: number | null = null;
 
-  constructor(public climb: ClimbService, public auth: AuthService, private router: Router, private gymService: GymService) { }
-
-  ngOnInit(): void {
-    const selectedGymId = localStorage.getItem('selectedGymId');
-    if (selectedGymId) {
-      const id = Number(selectedGymId);
-      this.gymService.getGym(id).subscribe({
-        next: (g) => this.currentGymName = g?.name ?? `Gym #${id}`,
-        error: () => this.currentGymName = `Gym #${id}`
-      });
-    } else {
-      this.currentGymName = null;
-    }
+  constructor(private gymService: GymService, public auth: AuthService) { // <-- expose as public
+    this.gymService.getSelectedGymName$().subscribe(name => this.currentGymName = name);
+    this.gymService.getSelectedGymId$().subscribe(id => this.currentGymId = id);
   }
 
-  logout() {
+  gymLink(): any[] {
+    return ['/climbs', this.currentGymId ?? 1];
+  }
+
+  logout(): void {
     this.auth.logout();
-    this.router.navigate(['/login']);
   }
-
-  protected readonly title = signal('ClimbingAppAngular');
 }

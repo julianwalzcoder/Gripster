@@ -5,7 +5,7 @@ import { MyClimbs } from './my-climbs/my-climbs';
 import { MyProjects } from './my-projects/my-projects';
 import { AuthGuard } from './guards/auth.guard';
 import { Login } from './login/login';
-import { SelectGym } from './select-gym/select-gym';
+import { SelectGymComponent } from './select-gym/select-gym';
 import { AddClimb } from './add-climb/add-climb';
 import { EditClimb } from './edit-climb/edit-climb';
 import { AdminGuard } from './guards/admin.guard';
@@ -20,7 +20,7 @@ export const routes: Routes = [
   { path: 'climb-detail/:id', component: ClimbDetailComponent, canActivate: [AuthGuard] },
   { path: 'my-climbs', component: MyClimbs, canActivate: [AuthGuard] },
   { path: 'my-projects', component: MyProjects, canActivate: [AuthGuard] },
-  { path: 'select-gym', component: SelectGym, canActivate: [AuthGuard] },
+  { path: 'select-gym', component: SelectGymComponent, canActivate: [AuthGuard] },
   { path: 'session-view', component: SessionView, canActivate: [AuthGuard] },
 
   // Admin only

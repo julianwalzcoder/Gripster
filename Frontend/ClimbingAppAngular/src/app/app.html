@@ -7,25 +7,25 @@
     
     
     <mat-menu #menu="matMenu">
-      <button routerLink="/climbs/{{ climb.getGymID() }}" mat-menu-item>Climbs</button>
+      <button [routerLink]="gymLink()" mat-menu-item>Climbs</button>
       <button routerLink="/session-view" mat-menu-item>Sessions</button>
       <button routerLink="/my-climbs" mat-menu-item>My Climbs</button>
       <button routerLink="/my-projects" mat-menu-item>My Projects</button>
       <button routerLink="/select-gym" mat-menu-item>Change Gym</button>
     </mat-menu>
-    <span class="current-gym-inline" *ngIf="currentGymName as gym">
+    <span class="current-gym-inline">
       <mat-icon>location_on</mat-icon>
-      {{ gym }}
+      {{ currentGymName }}
     </span>
     
     <span class="spacer" style="flex: 1 1 auto;"></span>
     
-    <img src="assets/images/gripster.jpg" [routerLink]="['/climbs', climb.getGymID()]" style="height:40px; margin-right:10px; cursor: pointer;">
-    <span class="toolbar-title" [routerLink]="['/climbs', climb.getGymID()]" style="cursor: pointer;">Gripster</span>
+    <img src="assets/images/gripster.jpg" [routerLink]="gymLink()" style="height:40px; margin-right:10px; cursor: pointer;">
+    <span class="toolbar-title" [routerLink]="gymLink()" style="cursor: pointer;">Gripster</span>
 
     <span class="spacer" style="flex: 1 1 auto;"></span>
 
-    <button mat-raised-button color="primary" routerLink="/climbs/{{ climb.getGymID() }}">
+    <button mat-raised-button color="primary" [routerLink]="gymLink()">
       Home
     </button>
 
