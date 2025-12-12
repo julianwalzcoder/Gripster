@@ -20,6 +20,25 @@
         </mat-select>
       </mat-form-field>
 
+      <mat-form-field appearance="outline" style="width: 100%; max-width: 320px;">
+        <mat-label>Search</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" placeholder="Search by grade, status or id">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 180px;">
+        <mat-label>Sort by</mat-label>
+        <mat-select [(ngModel)]="sortBy" (ngModelChange)="onSortByChange()">
+          <mat-option value="setDate">Set Date</mat-option>
+          <mat-option value="grade">Grade</mat-option>
+          <mat-option value="routeId">Route ID</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-icon-button (click)="toggleSortDirection()" aria-label="Toggle sort direction" title="Toggle sort direction">
+        <mat-icon>{{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      </button>
+
       <button mat-raised-button color="accent" (click)="resetFilters()">
         <mat-icon>refresh</mat-icon>
         Reset Filters

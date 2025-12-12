@@ -2,20 +2,43 @@
   <div class="header">
     <h2>My Sessions</h2>
   </div>
-  
+
+  <div class="filter-section mat-elevation-z2" style="padding:12px 16px; border-radius:8px; background:#fff; margin-bottom:16px;">
+    <div class="filters" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+      <mat-form-field appearance="outline" style="width:200px;">
+        <mat-label>Start date</mat-label>
+        <input matInput type="date" [(ngModel)]="startDate" (ngModelChange)="applyDateFilters()" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width:200px;">
+        <mat-label>End date</mat-label>
+        <input matInput type="date" [(ngModel)]="endDate" (ngModelChange)="applyDateFilters()" />
+      </mat-form-field>
+
+      <button mat-icon-button (click)="toggleSortDirection()" aria-label="Toggle sort direction" title="Toggle sort direction">
+        <mat-icon>{{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      </button>
+
+      <button mat-raised-button color="accent" (click)="resetDateFilters()">
+        <mat-icon>refresh</mat-icon>
+        Reset
+      </button>
+    </div>
+  </div>
+
   <div class="sessions-container">
-    <div *ngFor="let d of days" class="session-card">
+    <div *ngFor="let d of filteredDays" class="session-card mat-elevation-z2">
       <div class="session-header">
         <h3 class="session-date">{{ d.date | date:'fullDate' }}</h3>
         <span class="route-count">{{ d.routes.length }} route{{ d.routes.length !== 1 ? 's' : '' }}</span>
       </div>
-      
+
       <div class="session-routes">
         <div *ngIf="d.routes.length === 0" class="empty-state">
           <span class="empty-icon">📋</span>
           <p>No routes logged for this day</p>
         </div>
-        
+
         <div *ngFor="let r of d.routes" class="route-item">
           <div class="route-info" [routerLink]="['/climb-detail', r.routeId]">
             <span class="route-id">Route #{{ r.routeId }}</span>
@@ -25,6 +48,11 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!filteredDays || filteredDays.length === 0">
+      <span class="empty-icon">📋</span>
+      <p>No sessions found for the selected range.</p>
     </div>
   </div>
 </div>

@@ -1,8 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatInputModule } from '@angular/material/input';
 import { SessionService, SessionItem, SessionRouteItem, UserSessionRoute } from '../services/session-service';
 import { AuthService } from '../services/auth-service';
+import { FormsModule } from '@angular/forms';
 
 interface DayView {
   date: string;
@@ -12,12 +19,28 @@ interface DayView {
 @Component({
   selector: 'app-session-view',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatChipsModule,
+    MatInputModule
+  ],
   templateUrl: './session-view.html',
   styleUrl: './session-view.css'
 })
 export class SessionView {
   days: DayView[] = [];
+  filteredDays: DayView[] = [];
+  searchTerm = '';
+  startDate = '';
+  endDate = '';
+  sortBy: 'date' = 'date';
+  sortDirection: 'asc' | 'desc' = 'desc';
 
   constructor(private sessionService: SessionService, private auth: AuthService) {}
 
@@ -90,7 +113,7 @@ export class SessionView {
           });
 
         this.days = Array.from(byDate.entries())
-          .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
+          .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime()) // newest first
           .map(([date, perRoute]) => ({
             date,
             routes: Array.from(perRoute.values()).map(r => ({ routeId: r.routeId, status: r.status }))
@@ -108,6 +131,8 @@ export class SessionView {
           counts.set(key, (counts.get(key) ?? 0) + 1);
         });
         console.table(Array.from(counts.entries()).map(([key, count]) => ({ key, count })));
+
+        this.applyDateFilters();
       },
       error: (err: any) => console.error('Failed to load session logs', err)
     });
@@ -147,16 +172,64 @@ export class SessionView {
     });
   }
 
-  getStatusClass(status: string | null | undefined): string {
-    if (!status) return 'status-default';
-    const normalized = status.toLowerCase();
-    if (normalized === 'flash') return 'status-flash';
-    if (normalized === 'top') return 'status-top';
-    if (normalized === 'attempted') return 'status-attempted';
-    return 'status-default';
+  getStatusClass(status: string | null): string {
+    const s = (status ?? 'unknown').toLowerCase();
+    return 'status-chip status-' + s;
   }
 
-  getStatusDisplay(status: string | null | undefined): string {
-    return status ?? 'Not Set';
+  getStatusDisplay(status: string | null): string {
+    return status ?? 'Unknown';
+  }
+
+  applyFilters() {
+    // Optionally filter by searchTerm (route id/status) and invert days order for sortDirection
+    const term = this.searchTerm.trim().toLowerCase();
+    const base = this.days.map(d => ({
+      date: d.date,
+      routes: term
+        ? d.routes.filter(r =>
+            String(r.routeId).includes(term) ||
+            (r.status ?? '').toLowerCase().includes(term)
+          )
+        : d.routes
+    }));
+    this.days = (this.sortDirection === 'asc')
+      ? [...base].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      : [...base].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  applyDateFilters(): void {
+    const start = this.startDate ? new Date(this.startDate) : null;
+    const end = this.endDate ? new Date(this.endDate) : null;
+
+    let result = this.days.filter(d => {
+      const day = new Date(d.date);
+      if (start && day < start) return false;
+      if (end) {
+        // include end date fully
+        const endDay = new Date(end);
+        endDay.setHours(23, 59, 59, 999);
+        if (day > endDay) return false;
+      }
+      return true;
+    });
+
+    result = this.sortDirection === 'asc'
+      ? result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      : result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    this.filteredDays = result;
+  }
+
+  toggleSortDirection(): void {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    this.applyDateFilters();
+  }
+
+  resetDateFilters(): void {
+    this.startDate = '';
+    this.endDate = '';
+    this.sortDirection = 'desc';
+    this.applyDateFilters();
   }
 }

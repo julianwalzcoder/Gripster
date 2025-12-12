@@ -55,9 +55,25 @@ export class ClimbCard {
   }
 
   deleteClimb() {
-    if (this.climb) {
-      this.delete.emit(this.climb.routeId);
-    }
+    if (!this.climb) return;
+
+    const ok = confirm(`Delete climb ${this.climb.climbId} (${this.climb.grade})?`);
+    if (!ok) return;
+
+    this.climbService.deleteClimb(this.climb.routeId).subscribe({
+      next: () => {
+        // notify parent to remove item from list
+        this.delete.emit(this.climb.routeId);
+        // optional: hard refresh list route
+        this.router.navigate(['/climbs', this.climb.gymId]).then(() => {
+          // no-op; parent list should also react to (delete) event
+        });
+      },
+      error: (err) => {
+        console.error('Delete failed', err);
+        alert('Failed to delete climb');
+      }
+    });
   }
 
   editClimb(id: number) {

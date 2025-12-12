@@ -1,26 +1,56 @@
 <div class="climb-list-container">
   <div class="filter-section mat-elevation-z2">
-    <h2><mat-icon>person</mat-icon> My Projects</h2>
-    <p class="subtitle">View all your attempted climbs</p>
-    
-    
+    <h2><mat-icon>folder</mat-icon> My Projects</h2>
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onStatusChange()">
+          <mat-option *ngFor="let status of availableStatuses" [value]="status">
+            {{ status === 'all' ? 'All Statuses' : status }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Grade</mat-label>
+        <mat-select [(ngModel)]="selectedGrade" (selectionChange)="onGradeChange()">
+          <mat-option *ngFor="let grade of availableGrades" [value]="grade">
+            {{ grade === 'all' ? 'All Grades' : grade }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%; max-width: 320px;">
+        <mat-label>Search</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" placeholder="Search by grade, status or id">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 180px;">
+        <mat-label>Sort by</mat-label>
+        <mat-select [(ngModel)]="sortBy" (ngModelChange)="onSortByChange()">
+          <mat-option value="setDate">Set Date</mat-option>
+          <mat-option value="grade">Grade</mat-option>
+          <mat-option value="routeId">Route ID</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-icon-button (click)="toggleSortDirection()" aria-label="Toggle sort direction">
+        <mat-icon>{{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      </button>
+
+      <button mat-raised-button color="accent" (click)="resetFilters()">
+        <mat-icon>refresh</mat-icon>
+        Reset Filters
+      </button>
+    </div>
+  </div>
 
   <div class="climbs-grid">
-    <app-climb-card 
-      *ngFor="let climb of filteredClimbs" 
+    <app-climb-card
+      *ngFor="let climb of filteredClimbs"
       [climb]="climb"
       (delete)="onDeleteClimb($event)">
     </app-climb-card>
-  </div>
-
-  <div *ngIf="filteredClimbs.length === 0 && climbs.length === 0" class="no-results mat-elevation-z1">
-    <mat-icon>sentiment_satisfied</mat-icon>
-    <p>You haven't logged any climbs yet!</p>
-    <p class="hint">Start climbing and marking your progress.</p>
-  </div>
-
-  <div *ngIf="filteredClimbs.length === 0 && climbs.length > 0" class="no-results mat-elevation-z1">
-    <mat-icon>search_off</mat-icon>
-    <p>No climbs match your filters.</p>
   </div>
 </div>
