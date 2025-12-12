@@ -15,6 +15,14 @@
   margin: 0;
 }
 
+h3 {
+  color: #1a1a1a;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+
 .sessions-container {
   display: flex;
   flex-direction: column;
