@@ -113,13 +113,18 @@ namespace ClimbingApp.API.Controllers
             var route = ClimbRepository.GetRouteById(routeId);
             if (route == null) return BadRequest($"Route with ID {routeId} does not exist");
 
+            // upsert the current status in UserRoute
             var ok = Repository.InsertUserRouteByID(userId, routeId, status);
             if (!ok) return BadRequest("Something went wrong");
 
-            // also log the action
-            _userSessionRouteRepository.Insert(userId, routeId, status);
+            // only log to UserSessionRoute if the status changed since last log
+            var last = _userSessionRouteRepository.GetLast(userId, routeId);
+            if (last == null || !string.Equals(last.Value.Status, status, StringComparison.OrdinalIgnoreCase))
+            {
+                _userSessionRouteRepository.Insert(userId, routeId, status);
+            }
 
-            return Ok(new { message = "UserRoute updated and session logged" });
+            return Ok(new { message = "UserRoute updated and session logged (deduped)" });
         }
 
         [HttpPost("{userId}/{routeId}/rating")]

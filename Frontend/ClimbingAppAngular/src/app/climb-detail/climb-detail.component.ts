@@ -22,9 +22,10 @@ export class ClimbDetailComponent implements OnInit {
   climb!: Climb;
   loading = true;
   error: string | null = null;
-    avgRating?: number; // Durchschnitt für diese Route
+  avgRating?: number; // Durchschnitt für diese Route
   userRating?: number; // aktuelle Bewertung des Users
-  
+  updating = false;
+
   constructor(
     private climbService: ClimbService,
     private authService: AuthService,
@@ -68,7 +69,18 @@ export class ClimbDetailComponent implements OnInit {
     console.log('Fetching climb with ID:', this.climbID);
     this.climbService.getClimb(this.climbID).subscribe({
       next: (climb) => {
-        this.climb = { ...climb, grade: climb.grade ?? '' }; // coerce null to ''
+        const normalized: Climb = {
+          routeId: Number(climb.routeId),
+          gradeId: climb.gradeId ?? undefined,
+          grade: climb.grade ?? '',
+          status: climb.status ?? null,       // never undefined
+          gymId: Number(climb.gymId ?? 0),    // never undefined
+          setDate: climb.setDate ?? null,
+          removeDate: climb.removeDate ?? null,
+          adminId: climb.adminId ?? null,
+          climbId: Number(climb.climbId)
+        };
+        this.climb = normalized;
         this.loading = false;
       },
       error: (error) => {
@@ -98,15 +110,23 @@ export class ClimbDetailComponent implements OnInit {
   }
 
   updateClimbStatus(userId: number, routeId: number, status: string): void {
-    const effectiveUserId = this.authService.getCurrentUserId() ?? 1;
-    console.log('Update status clicked:', effectiveUserId, routeId, status);
-    this.climbService.updateClimbStatus(effectiveUserId, routeId, status).subscribe({
+    if (this.updating) {
+      console.warn('Status update ignored: already updating');
+      return;
+    }
+    this.updating = true;
+    console.log('Updating status ->', { userId, routeId, status });
+
+    const effectiveUserId = this.authService.getCurrentUserId() ?? userId;
+    this.climbService.updateClimbStatus(effectiveUserId, routeId, status).pipe().subscribe({
       next: () => {
-        console.log('Status updated successfully');
+        console.log('Status update success');
         this.climb.status = status;
+        this.updating = false;
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error('Error updating status:', err);
+        this.updating = false;
         alert('Failed to update climb status. ' + err.message);
       }
     });
@@ -117,7 +137,7 @@ export class ClimbDetailComponent implements OnInit {
     this.updateClimbStatus(userId, routeId, status);
   }
 
- rateClimb(rating: number): void {
+  rateClimb(rating: number): void {
     const userId = this.authService.getCurrentUserId();
     if (!userId) { 
       alert('Please log in to rate climbs'); 

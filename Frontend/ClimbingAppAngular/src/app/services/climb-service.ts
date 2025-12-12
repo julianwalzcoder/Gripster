@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-// Remove the conflicting import of Climb from model to avoid TS2440
-// import { Climb } from '../model/climb';
+import { Climb } from '../model/climb';
 import { AuthService } from './auth-service';
 
 @Injectable({
@@ -13,9 +12,9 @@ export class ClimbService {
   baseUrl = 'http://localhost:5098';
   private authService = inject(AuthService);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getClimbs(): Observable<RouteDetails[]> {
+  getClimbs(): Observable<Climb[]> {
     const currentUserId = this.authService.getCurrentUserId();
     const selectedGymId = localStorage.getItem('selectedGymId');
     const endpoint = selectedGymId
@@ -34,17 +33,16 @@ export class ClimbService {
         });
 
         return Array.from(uniqueRoutes.values()).map(session => ({
-          userId: currentUserId,
-          routeId: session.routeID ?? session.routeid,
-          gradeId: (session.gradeID ?? session.gradeid ?? undefined) as number | undefined, // map to undefined
-          grade: session.gradeFbleau ?? session.gradefbleau,
-          status: session.status,
-          gymId: session.gymID ?? session.gymid,
+          routeId: Number(session.routeID ?? session.routeid),
+          gradeId: session.gradeID ?? session.gradeid ?? null, // Climb likely allows null
+          grade: session.gradeFbleau ?? session.gradefbleau ?? '',
+          status: session.status ?? null,                      // never undefined
+          gymId: Number(session.gymID ?? session.gymid ?? 0),  // never undefined
           setDate: session.setDate ?? session.setdate ?? null,
           removeDate: session.removeDate ?? session.removedate ?? null,
-          adminId: session.adminID ?? session.adminid,
-          climbId: session.routeID ?? session.routeid
-        } as RouteDetails));
+          adminId: session.adminID ?? session.adminid ?? null,
+          climbId: Number(session.routeID ?? session.routeid)
+        } as Climb));
       })
     );
   }
@@ -103,6 +101,7 @@ export class ClimbService {
 
   // USER: update personal status on a climb
   updateClimbStatus(userID: number, routeID: number, status: string): Observable<any> {
+    console.log('[updateClimbStatus] POST', userID, routeID, status);
     return this.http.post(
       `${this.baseUrl}/UserRoute/${userID}/${routeID}/status/${encodeURIComponent(status)}`,
       {}
@@ -127,14 +126,15 @@ export class ClimbService {
 // Rename local interface to avoid conflict with imported Climb
 export interface RouteDetails {
   routeId: number;
-  gymId: number;
-  gradeId: number | undefined;  // change to undefined to match Climb
-  grade: string | null;
-  status: string | null;
-  setDate: string | null;
-  removeDate: string | null;
-  adminId: number | null;
+  gradeId?: number;
+  grade?: string | null;
+  status?: string | null;
+  gymId?: number;
+  setDate?: string | null;
+  removeDate?: string | null;
+  adminId?: number;
   climbId: number;
+  userId?: number; // add optional to satisfy templates
 }
 
 export interface AddClimbRequest {
@@ -144,17 +144,5 @@ export interface AddClimbRequest {
   setDate: string | null;
   removeDate: string | null;
   status?: string;
-}
-
-export interface Climb {
-  routeId: number;
-  gymId: number;
-  gradeId: number | null;  // numeric ID
-  grade: string | null;    // display text like "6b"
-  status: string | null;
-  setDate: string | null;
-  removeDate: string | null;
-  adminId: number | null;
-  climbId: number;
 }
 

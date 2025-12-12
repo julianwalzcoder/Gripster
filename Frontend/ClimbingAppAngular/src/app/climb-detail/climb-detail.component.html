@@ -30,8 +30,8 @@
           <mat-icon>flag</mat-icon>
           <div>
             <span class="label">Status</span>
-            <mat-chip [class]="'status-chip status-' + climb.status.toLowerCase()">
-              {{ climb.status }}
+            <mat-chip [class]="'status-chip status-' + (climb?.status?.toLowerCase() || 'unknown')">
+              {{ climb?.status ?? 'Unknown' }}
             </mat-chip>
           </div>
         </div>
@@ -67,14 +67,6 @@
             <span class="value">{{ climb.adminId }}</span>
           </div>
         </div>
-        
-        <div class="info-item" *ngIf="climb.userId">
-          <mat-icon>person</mat-icon>
-          <div>
-            <span class="label">User ID</span>
-            <span class="value">{{ climb.userId }}</span>
-          </div>
-        </div>
       </div>
       
       <div class="rating-section">
@@ -90,7 +82,7 @@
         </ng-template>
 
         <!-- User Rating: klickbare Sterne -->
-        <div class="user-rating" *ngIf="climb?.userId">
+        <div class="user-rating">
           <span class="rating-label">Your Rating:</span>
           <span class="star-container" *ngFor="let s of [1,2,3,4,5]" (click)="rateClimb(s)">
             <mat-icon [class.filled]="(userRating ?? 0) >= s">star</mat-icon>
@@ -100,15 +92,15 @@
     </mat-card-content>
     
     <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="updateClimbStatusWithDefault(climb.routeId, 'Top')">
+      <button mat-raised-button color="primary" (click)="updateClimbStatusWithDefault(climb.routeId, 'Top')" [disabled]="updating">
         <mat-icon>check_circle</mat-icon>
         Mark as Top
       </button>
-      <button mat-raised-button color="accent" (click)="updateClimbStatusWithDefault(climb.routeId, 'Flash')">
+      <button mat-raised-button color="accent" (click)="updateClimbStatusWithDefault(climb.routeId, 'Flash')" [disabled]="updating">
         <mat-icon>bolt</mat-icon>
         Mark as Flash
       </button>
-      <button mat-raised-button (click)="updateClimbStatusWithDefault(climb.routeId, 'Attempted')">
+      <button mat-raised-button (click)="updateClimbStatusWithDefault(climb.routeId, 'Attempted')" [disabled]="updating">
         <mat-icon>hourglass_empty</mat-icon>
         Mark as Attempted
       </button>
@@ -129,4 +121,23 @@
       </button>
     </mat-card-content>
   </mat-card>
+
+  <ng-container *ngIf="climb as c">
+    <!-- REMOVE this whole block to avoid duplicate status actions -->
+    <!--
+    <div>
+      Grade: {{ c.grade || '—' }}
+    </div>
+    <button mat-raised-button (click)="updateClimbStatusWithDefault(c.routeId, 'Top')" [disabled]="updating">
+      Set Top
+    </button>
+    <button mat-raised-button (click)="updateClimbStatusWithDefault(c.routeId, 'Flash')" [disabled]="updating">
+      Set Flash
+    </button>
+    <div *ngIf="avgRating != null">Average: {{ avgRating }}</div>
+    <div *ngIf="userRating != null">Your rating: {{ userRating }}</div>
+    -->
+  </ng-container>
+
+  <span>{{ climb?.status || '' }}</span>
 </div>

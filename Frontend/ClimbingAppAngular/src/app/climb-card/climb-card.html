@@ -14,9 +14,9 @@
           <mat-icon>trending_up</mat-icon>
           {{ climb.grade }}
         </mat-chip>
-        <mat-chip [class]="'status-chip status-' + climb.status.toLowerCase()">
-          <mat-icon>flag</mat-icon>
-          {{ climb.status }}
+        <!-- status class guard -->
+        <mat-chip [class]="'status-chip status-' + (climb?.status?.toLowerCase() || 'unknown')">
+          {{ climb?.status ?? 'Unknown' }}
         </mat-chip>
       </mat-chip-set>
     </div>
@@ -28,7 +28,7 @@
     </ng-template>
 
     <!-- User Rating: klickbare Sterne -->
-    <div class="user-rating" *ngIf="climb?.userId">
+    <div class="user-rating">
       <span>User Rating:</span>
       <button mat-icon-button *ngFor="let s of [1,2,3,4,5]" (click)="rateClimb(s); $event.stopPropagation()">
         <mat-icon [class.filled]="(userRating ?? 0) >= s">star</mat-icon>
