@@ -13,16 +13,16 @@
       <button routerLink="/my-projects" mat-menu-item>My Projects</button>
       <button routerLink="/select-gym" mat-menu-item>Change Gym</button>
     </mat-menu>
-    <span class="current-gym-inline">
-      <mat-icon>location_on</mat-icon>
-      {{ currentGymName }}
-    </span>
-    
-    <span class="spacer" style="flex: 1 1 auto;"></span>
     
     <img src="assets/images/gripster.jpg" [routerLink]="gymLink()" style="height:40px; margin-right:10px; cursor: pointer;">
     <span class="toolbar-title" [routerLink]="gymLink()" style="cursor: pointer;">Gripster</span>
-
+    
+    <span class="spacer" style="flex: 1 1 auto;"></span>
+    
+    <span class="current-gym-inline" routerLink="/select-gym" style="cursor: pointer;">
+      <mat-icon>location_on</mat-icon>
+      {{ currentGymName }}
+    </span>
     <span class="spacer" style="flex: 1 1 auto;"></span>
 
     <button mat-raised-button color="primary" [routerLink]="gymLink()">

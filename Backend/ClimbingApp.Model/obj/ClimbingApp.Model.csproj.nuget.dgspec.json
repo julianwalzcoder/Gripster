@@ -1,25 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {}
+    "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {}
   },
   "projects": {
-    "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {
+    "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
+        "projectUniqueName": "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
         "projectName": "ClimbingApp.Model",
-        "projectPath": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
-        "packagesPath": "/Users/julianwalz/.nuget/packages/",
-        "outputPath": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/obj/",
+        "projectPath": "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
+        "packagesPath": "/Users/mjakobs/.nuget/packages/",
+        "outputPath": "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/julianwalz/.nuget/NuGet/NuGet.Config"
+          "/Users/mjakobs/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "/opt/homebrew/Cellar/dotnet/9.0.7/libexec/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +39,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -69,7 +70,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.7/libexec/sdk/9.0.108/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

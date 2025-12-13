@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "rCO3rZDE6Kk=",
+  "dgSpecHash": "zzBrlFpZnWY=",
   "success": true,
-  "projectFilePath": "/Users/julianwalz/Desktop/ClimbingApp/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
+  "projectFilePath": "/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Model/ClimbingApp.Model.csproj",
   "expectedPackageFiles": [
-    "/Users/julianwalz/.nuget/packages/microsoft.extensions.configuration/9.0.9/microsoft.extensions.configuration.9.0.9.nupkg.sha512",
-    "/Users/julianwalz/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.9/microsoft.extensions.configuration.abstractions.9.0.9.nupkg.sha512",
-    "/Users/julianwalz/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
-    "/Users/julianwalz/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
-    "/Users/julianwalz/.nuget/packages/microsoft.extensions.primitives/9.0.9/microsoft.extensions.primitives.9.0.9.nupkg.sha512",
-    "/Users/julianwalz/.nuget/packages/npgsql/9.0.4/npgsql.9.0.4.nupkg.sha512"
+    "/Users/mjakobs/.nuget/packages/microsoft.extensions.configuration/9.0.9/microsoft.extensions.configuration.9.0.9.nupkg.sha512",
+    "/Users/mjakobs/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.9/microsoft.extensions.configuration.abstractions.9.0.9.nupkg.sha512",
+    "/Users/mjakobs/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "/Users/mjakobs/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "/Users/mjakobs/.nuget/packages/microsoft.extensions.primitives/9.0.9/microsoft.extensions.primitives.9.0.9.nupkg.sha512",
+    "/Users/mjakobs/.nuget/packages/npgsql/9.0.4/npgsql.9.0.4.nupkg.sha512"
   ],
   "logs": []
 }
