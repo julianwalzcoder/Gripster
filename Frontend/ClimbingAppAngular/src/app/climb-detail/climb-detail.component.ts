@@ -28,7 +28,7 @@ export class ClimbDetailComponent implements OnInit {
 
   constructor(
     private climbService: ClimbService,
-    private authService: AuthService,
+    public authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {}

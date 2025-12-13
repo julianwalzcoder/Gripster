@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -8,7 +9,9 @@ export class AuthService {
     private TOKEN_KEY = 'jwt_token';
     private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
 
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient,
+        public router: Router) { }
 
     private hasToken(): boolean {
         return !!localStorage.getItem(this.TOKEN_KEY);
@@ -60,6 +63,7 @@ export class AuthService {
         localStorage.removeItem('role');
         localStorage.removeItem('adminId');
         this.loggedIn.next(false);
+        this.router.navigate(['/login'])
     }
 
     isLoggedIn(): boolean {
