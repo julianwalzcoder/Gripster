@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { GymService, GymOption } from '../services/gym-service';
 import { GradeService, GradeOption } from '../services/grade-service';
 import type { AddClimbRequest } from '../services/climb-service';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 
 interface User {
     id: number;
@@ -42,7 +43,8 @@ export class AddClimb {
         private authService: AuthService,
         private gymService: GymService,
         private gradeService: GradeService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private snackBar: MatSnackBar,
     ) { }
 
     currentAdmin: User = JSON.parse(localStorage.getItem('loggedInUser')!);
@@ -126,7 +128,7 @@ export class AddClimb {
 
         this.climbService.addClimb(payload).subscribe({
             next: () => {
-                this.successMessage = 'Climb added successfully!';
+                this.snackBar.open('Climb added', 'OK', { duration: 3000, verticalPosition: 'bottom' });
                 setTimeout(() => this.router.navigate(['/climbs/', formValue.gymId]), 1000);
             },
             error: (err: any) => console.error('Error creating climb:', err)

@@ -1,11 +1,6 @@
 --
--- PostgreSQL database dump
+-- PostgreSQL database dump (cleaned: removed Session and SessionRoute)
 --
-
-\restrict mtSjt8fDz3KPVpyFGb2d5hurM7ySlapWYnxweAtnwB5iOjLykssQaaeSAtTM1iu
-
--- Dumped from database version 17.6 (Postgres.app)
--- Dumped by pg_dump version 17.6 (Postgres.app)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -184,57 +179,6 @@ ALTER SEQUENCE public."Route_ID_seq" OWNED BY public."Route"."ID";
 
 
 --
--- Name: Session; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."Session" (
-    "ID" integer NOT NULL,
-    "UserID" integer NOT NULL,
-    "CustomName" character varying(50),
-    "Date" date,
-    "Feedback" text
-);
-
-
-ALTER TABLE public."Session" OWNER TO postgres;
-
---
--- Name: SessionRoute; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."SessionRoute" (
-    "SessionID" integer NOT NULL,
-    "RouteID" integer NOT NULL,
-    "Tries" integer,
-    "Status" character varying(10)  -- new per-session status
-);
-
-
-ALTER TABLE public."SessionRoute" OWNER TO postgres;
-
---
--- Name: Session_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public."Session_ID_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."Session_ID_seq" OWNER TO postgres;
-
---
--- Name: Session_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public."Session_ID_seq" OWNED BY public."Session"."ID";
-
-
---
 -- Name: User; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -340,13 +284,6 @@ ALTER TABLE ONLY public."Route" ALTER COLUMN "ID" SET DEFAULT nextval('public."R
 
 
 --
--- Name: Session ID; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Session" ALTER COLUMN "ID" SET DEFAULT nextval('public."Session_ID_seq"'::regclass);
-
-
---
 -- Name: User ID; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -430,55 +367,6 @@ COPY public."Route" ("ID", "GymID", "GradeID", "SetDate", "RemoveDate", "AdminID
 
 
 --
--- Data for Name: Session; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."Session" ("ID", "UserID", "CustomName", "Date", "Feedback") FROM stdin;
-1	1	Morning Bouldering	2025-06-01	Great session, felt strong!
-2	2	Training with Friends	2025-06-02	Fun but tiring.
-3	3	Project Session	2025-06-03	Worked on my 7A project.
-4	4	Evening Climbing	2025-06-04	Good progress on overhangs.
-5	5	Weekend Bouldering	2025-06-05	Tried new routes, loved it!
-6	1	Project Day 1	2025-06-06	Working the moves on Route 10
-7	1	Project Day 2	2025-06-08	Felt better today
-8	2	Training Block A	2025-06-06	Focus on consistency
-9	2	Training Block B	2025-06-09	Pushed hard
-10	3	Redpoint Try 1	2025-06-07	Nearly stuck the crux
-11	3	Redpoint Try 2	2025-06-10	Got past crux
-12	4	Evening Attempts	2025-06-06	Tried new beta
-13	4	Send Night	2025-06-11	Beta worked!
-14	5	Morning Session	2025-06-06	Warm-up and attempts
-15	5	Weekend Send	2025-06-12	Felt strong
-16	7	Project Kickoff	2025-06-06	First attempts on Route 14
-17	7	Project Midweek	2025-06-09	Trying new beta
-18	7	Project Send	2025-06-12	Finally sent!
-\.
-
-
---
--- Data for Name: SessionRoute; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."SessionRoute" ("SessionID", "RouteID", "Tries", "Status") FROM stdin;
-4	7	4	Attempted
-5	8	1	Flash
-6	10	3	Attempted
-7	10	2	Flash
-8	15	4	Attempted
-9	15	2	Top
-10	7	5	Attempted
-11	7	3	Top
-12	5	2	Attempted
-13	5	1	Flash
-14	28	6	Attempted
-15	28	2	Top
-16	14	5	Attempted
-17	14	3	Attempted
-18	14	2	Top
-\.
-
-
---
 -- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -543,13 +431,6 @@ SELECT pg_catalog.setval('public."Route_ID_seq"', 28, true);
 
 
 --
--- Name: Session_ID_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."Session_ID_seq"', 18, true);
-
-
---
 -- Name: User_ID_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -589,30 +470,6 @@ ALTER TABLE ONLY public."Route"
 
 
 --
--- Name: SessionRoute SessionRoute_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."SessionRoute"
-    ADD CONSTRAINT "SessionRoute_pkey" PRIMARY KEY ("SessionID", "RouteID");
-
-
---
--- Name: Session Session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Session"
-    ADD CONSTRAINT "Session_pkey" PRIMARY KEY ("ID");
-
-
---
--- Name: Admin UniqueAdminPerUser; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Admin"
-    ADD CONSTRAINT "UniqueAdminPerUser" UNIQUE ("UserID");
-
-
---
 -- Name: UserRoute UserRoute_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -642,6 +499,14 @@ ALTER TABLE ONLY public."User"
 
 ALTER TABLE ONLY public."User"
     ADD CONSTRAINT "User_pkey" PRIMARY KEY ("ID");
+
+
+--
+-- Name: Admin UniqueAdminPerUser; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Admin"
+    ADD CONSTRAINT "UniqueAdminPerUser" UNIQUE ("UserID");
 
 
 --
@@ -685,30 +550,6 @@ ALTER TABLE ONLY public."Route"
 
 
 --
--- Name: SessionRoute SessionRoute_RouteID_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."SessionRoute"
-    ADD CONSTRAINT "SessionRoute_RouteID_fkey" FOREIGN KEY ("RouteID") REFERENCES public."Route"("ID") ON DELETE CASCADE;
-
-
---
--- Name: SessionRoute SessionRoute_SessionID_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."SessionRoute"
-    ADD CONSTRAINT "SessionRoute_SessionID_fkey" FOREIGN KEY ("SessionID") REFERENCES public."Session"("ID") ON DELETE CASCADE;
-
-
---
--- Name: Session Session_UserID_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Session"
-    ADD CONSTRAINT "Session_UserID_fkey" FOREIGN KEY ("UserID") REFERENCES public."User"("ID") ON DELETE CASCADE;
-
-
---
 -- Name: UserRoute UserRoute_RouteID_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -737,8 +578,7 @@ ALTER TABLE ONLY public."UserRoute"
 
 
 -- ============================================================================
--- Session logging per user/route/date
--- Creates immutable log entries; use this instead of the old Session table.
+-- Session logging additions (kept): UserSessionRoute
 -- ============================================================================
 
 -- Table: UserSessionRoute
@@ -784,6 +624,4 @@ EXECUTE FUNCTION public.log_userroute_change();
 --
 -- PostgreSQL database dump complete
 --
-
-\unrestrict mtSjt8fDz3KPVpyFGb2d5hurM7ySlapWYnxweAtnwB5iOjLykssQaaeSAtTM1iu
 

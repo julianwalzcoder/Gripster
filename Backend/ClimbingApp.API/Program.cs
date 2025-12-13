@@ -15,7 +15,6 @@ builder.Services.AddScoped<GymRepository>();
 builder.Services.AddScoped<AdminRepository>();
 builder.Services.AddScoped<GradeRepository>();
 builder.Services.AddScoped<SessionRepository>();
-builder.Services.AddScoped<SessionRouteRepository>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<UserRouteRepository>();
 builder.Services.AddScoped<UserSessionRouteRepository>(); // <-- add this

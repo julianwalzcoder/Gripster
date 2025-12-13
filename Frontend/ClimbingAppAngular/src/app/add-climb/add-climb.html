@@ -2,7 +2,7 @@
     <mat-card class="add-climb-card mat-elevation-z2">
         <mat-card-title>Add a new Climb</mat-card-title>
         <mat-card-content>
-            <form [formGroup]="climbFormGroup">
+            <form [formGroup]="climbFormGroup" (ngSubmit)="addClimb()">
 
                 <!-- Gym Dropdown -->
                 <mat-form-field appearance="outline">
