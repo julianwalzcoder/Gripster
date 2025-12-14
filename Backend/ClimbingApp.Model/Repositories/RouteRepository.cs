@@ -10,7 +10,7 @@ public class ClimbRepository : BaseRepository
 {
     public ClimbRepository(IConfiguration configuration) : base(configuration) { }
     
-    public Climb GetRouteById(int id)
+    public virtual Climb GetRouteById(int id)
     {
         NpgsqlConnection dbConn = null;
         try
@@ -43,7 +43,7 @@ public class ClimbRepository : BaseRepository
         }
     }
     
-    public List<Climb> GetRoutes()
+    public virtual List<Climb> GetRoutes()
     {
         NpgsqlConnection dbConn = null;
         var routes = new List<Climb>();
@@ -77,7 +77,7 @@ public class ClimbRepository : BaseRepository
         }
     }
 
-    public bool InsertRoute(Climb r)
+    public virtual bool InsertRoute(Climb r)
     {
         if (r.SetDate == default(DateTime))
         r.SetDate = DateTime.Today;
@@ -108,7 +108,7 @@ values
         }
     }
     
-    public bool UpdateRoute(Climb r)
+    public virtual bool UpdateRoute(Climb r)
     {
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
@@ -132,7 +132,7 @@ WHERE
         return result;
     }
     
-    public bool DeleteRoute(int id)
+    public virtual bool DeleteRoute(int id)
     {
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
@@ -146,7 +146,7 @@ WHERE ""ID"" = @id
         return result;
     }
 
-    public decimal? GetAverageRatingForRoute(int routeId)
+    public virtual decimal? GetAverageRatingForRoute(int routeId)
     {
         using var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();

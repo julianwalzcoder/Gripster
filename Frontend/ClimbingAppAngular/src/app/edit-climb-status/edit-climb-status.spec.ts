@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { EditClimbStatus } from './edit-climb-status';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('EditClimbStatus', () => {
   let component: EditClimbStatus;
@@ -8,7 +9,11 @@ describe('EditClimbStatus', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditClimbStatus]
+      imports: [EditClimbStatus],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     })
     .compileComponents();
 

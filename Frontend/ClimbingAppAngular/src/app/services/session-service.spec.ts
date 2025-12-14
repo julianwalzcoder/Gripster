@@ -31,7 +31,7 @@ describe('SessionService', () => {
 
     service.getSessionsForUser(mockUserId).subscribe(sessions => {
       expect(sessions.length).toBe(1);
-      expect(sessions[0].routeId).toBe(15);
+      expect((sessions[0] as any).routeId).toBe(15);
     });
 
     const req = httpMock.expectOne(`/api/session/user/${mockUserId}`);

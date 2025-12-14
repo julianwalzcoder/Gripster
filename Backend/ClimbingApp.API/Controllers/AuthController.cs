@@ -51,18 +51,13 @@ namespace ClimbingApp.API.Controllers
         [AllowAnonymous]
         public IActionResult Register([FromBody] RegisterRequest req)
         {
-            if (string.IsNullOrWhiteSpace(req.Username) || string.IsNullOrWhiteSpace(req.Password))
+            if (req == null || string.IsNullOrWhiteSpace(req.Username) || string.IsNullOrWhiteSpace(req.Password))
                 return BadRequest("Username and password are required");
 
             var user = new User(0)
             {
-                Name = req.Name,
                 Username = req.Username,
                 Mail = req.Mail,
-                Street = req.Street,
-                StreetNumber = req.StreetNumber,
-                Postcode = req.Postcode,
-                City = req.City,
                 Role = "user" // enforce normal user
             };
 
@@ -112,5 +107,12 @@ namespace ClimbingApp.API.Controllers
     {
         public required string Username { get; set; }
         public required string Password { get; set; }
+    }
+
+    public class RegisterRequest
+    {
+        public required string Username { get; set; }
+        public required string Password { get; set; }
+        public string? Mail { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace ClimbingApp.Model.Repositories
     {
         public AuthRepository(IConfiguration configuration) : base(configuration) { }
 
-        public User ValidateUser(string username, string password)
+        public virtual User ValidateUser(string username, string password)
         {
             NpgsqlConnection dbConn = null;
             try

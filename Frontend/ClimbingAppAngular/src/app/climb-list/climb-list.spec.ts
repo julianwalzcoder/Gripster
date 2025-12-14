@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ClimbList } from './climb-list';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('ClimbList', () => {
   let component: ClimbList;
@@ -8,7 +9,11 @@ describe('ClimbList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClimbList]
+      imports: [ClimbList],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     })
     .compileComponents();
 

@@ -11,7 +11,7 @@ public class UserRepository : BaseRepository
 {
     public UserRepository(IConfiguration configuration) : base(configuration) { }
 
-    public User GetUserById(int id)
+    public virtual User GetUserById(int id)
     {
         NpgsqlConnection dbConn = null;
         try
@@ -48,7 +48,7 @@ public class UserRepository : BaseRepository
         }
     }
 
-    public List<User> GetUsers()
+    public virtual List<User> GetUsers()
     {
         NpgsqlConnection dbConn = null;
         var users = new List<User>();
@@ -86,7 +86,7 @@ public class UserRepository : BaseRepository
         }
     }
 
-    public bool InsertUser(User u)
+    public virtual bool InsertUser(User u)
     {
         NpgsqlConnection dbConn = null;
         try
@@ -117,7 +117,7 @@ public class UserRepository : BaseRepository
         }
     }
 
-    public bool UpdateUser(User u)
+    public virtual bool UpdateUser(User u)
     {
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
@@ -149,7 +149,7 @@ WHERE ""ID"" = @id
         return result;
     }
 
-    public bool DeleteUser(int id)
+    public virtual bool DeleteUser(int id)
     {
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
@@ -160,7 +160,7 @@ WHERE ""ID"" = @id
         return result;
     }
 
-    public bool InsertUser(User u, string plainPassword)
+    public virtual bool InsertUser(User u, string plainPassword)
     {
         NpgsqlConnection dbConn = null;
         try

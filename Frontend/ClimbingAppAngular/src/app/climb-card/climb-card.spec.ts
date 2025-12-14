@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ClimbCard } from './climb-card';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('ClimbCard', () => {
   let component: ClimbCard;
@@ -8,7 +9,11 @@ describe('ClimbCard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClimbCard]
+      imports: [ClimbCard],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     })
     .compileComponents();
 
