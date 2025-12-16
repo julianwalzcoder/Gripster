@@ -25,7 +25,7 @@ namespace ClimbingApp.API.Controllers
         }
 
         [HttpGet("{userId}/{routeId}")]
-        public ActionResult<UserRoute> GetUserRoute([FromRoute] int userId, [FromRoute] int routeId)
+        public virtual ActionResult<UserRoute> GetUserRoute([FromRoute] int userId, [FromRoute] int routeId)
         {
             UserRoute userRoute = Repository.GetUserRouteById(userId, routeId);
             if (userRoute == null)
@@ -36,25 +36,25 @@ namespace ClimbingApp.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<UserRoute>> GetUserRoutes()
+        public virtual ActionResult<IEnumerable<UserRoute>> GetUserRoutes()
         {
             return Ok(Repository.GetUserRoutes());
         }
 
         [HttpGet("user/{userId}")]
-        public ActionResult<IEnumerable<UserRoute>> GetUserRoutesByUserId([FromRoute] int userId)
+        public virtual ActionResult<IEnumerable<UserRoute>> GetUserRoutesByUserId([FromRoute] int userId)
         {
             return Ok(Repository.GetUserRoutesByUserId(userId));
         }
 
         [HttpGet("route/{routeId}")]
-        public ActionResult<IEnumerable<UserRoute>> GetUserRoutesByRouteId([FromRoute] int routeId)
+        public virtual ActionResult<IEnumerable<UserRoute>> GetUserRoutesByRouteId([FromRoute] int routeId)
         {
             return Ok(Repository.GetUserRoutesByRouteId(routeId));
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] UserRoute userRoute)
+        public virtual ActionResult Post([FromBody] UserRoute userRoute)
         {
             if (userRoute == null)
             {
@@ -84,7 +84,7 @@ namespace ClimbingApp.API.Controllers
         }
 
         [HttpPut]
-        public ActionResult UpdateUserRoute([FromBody] UserRoute userRoute)
+        public virtual ActionResult UpdateUserRoute([FromBody] UserRoute userRoute)
         {
             if (userRoute == null)
             {
@@ -106,7 +106,7 @@ namespace ClimbingApp.API.Controllers
         }
         
         [HttpPost("{userId}/{routeId}/status/{status}")]
-        public ActionResult InsertUserRouteByID(int userId, int routeId, string status)
+        public virtual ActionResult InsertUserRouteByID(int userId, int routeId, string status)
         {
             var user = UserRepository.GetUserById(userId);
             if (user == null) return BadRequest($"User with ID {userId} does not exist");
@@ -128,7 +128,7 @@ namespace ClimbingApp.API.Controllers
         }
 
         [HttpPost("{userId}/{routeId}/rating")]
-        public ActionResult SetRating([FromRoute] int userId, [FromRoute] int routeId, [FromBody] int? rating)
+        public virtual ActionResult SetRating([FromRoute] int userId, [FromRoute] int routeId, [FromBody] int? rating)
         {
             if (rating is not null && (rating < 1 || rating > 5))
                 return BadRequest("Rating must be 1..5 or null.");
@@ -137,7 +137,7 @@ namespace ClimbingApp.API.Controllers
         }
 
         [HttpGet("{userId}/{routeId}/rating")]
-        public ActionResult<int?> GetRating([FromRoute] int userId, [FromRoute] int routeId)
+        public virtual ActionResult<int?> GetRating([FromRoute] int userId, [FromRoute] int routeId)
         {
             var ur = Repository.GetUserRouteById(userId, routeId);
             if (ur == null) return Ok((int?)null); // Return null instead of 404
@@ -145,7 +145,7 @@ namespace ClimbingApp.API.Controllers
         }
 
         [HttpDelete("{userId}/{routeId}")]
-        public ActionResult DeleteUserRoute([FromRoute] int userId, [FromRoute] int routeId)
+        public virtual ActionResult DeleteUserRoute([FromRoute] int userId, [FromRoute] int routeId)
         {
             UserRoute existingUserRoute = Repository.GetUserRouteById(userId, routeId);
             if (existingUserRoute == null)

@@ -227,7 +227,7 @@ where ""UserID"" = @userid AND ""RouteID"" = @routeid
         return result;
     }
 
-    public bool UpsertRating(int userId, int routeId, int? rating)
+    public virtual bool UpsertRating(int userId, int routeId, int? rating)
     {
         using var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();

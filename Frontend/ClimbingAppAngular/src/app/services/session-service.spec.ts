@@ -34,7 +34,7 @@ describe('SessionService', () => {
       expect((sessions[0] as any).routeId).toBe(15);
     });
 
-    const req = httpMock.expectOne(`/api/session/user/${mockUserId}`);
+    const req = httpMock.expectOne(r => r.url.includes(`/api/session/user/${mockUserId}`));
     expect(req.request.method).toBe('GET');
     req.flush(mockSessions);
   });
@@ -47,7 +47,7 @@ describe('SessionService', () => {
       error => expect(error.status).toBe(500)
     );
 
-    const req = httpMock.expectOne(`/api/session/user/${mockUserId}`);
+    const req = httpMock.expectOne(r => r.url.includes(`/api/session/user/${mockUserId}`));
     req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
   });
 });

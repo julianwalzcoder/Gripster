@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditClimb } from './edit-climb';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('EditClimb', () => {
   let component: EditClimb;
@@ -12,7 +14,19 @@ describe('EditClimb', () => {
       imports: [EditClimb],
       providers: [
         provideHttpClient(),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            snapshot: { 
+              params: {},
+              paramMap: {
+                get: (key: string) => null
+              }
+            }
+          }
+        }
       ]
     })
     .compileComponents();
