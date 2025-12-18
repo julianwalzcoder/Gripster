@@ -18,8 +18,8 @@ export class ClimbService {
     const currentUserId = this.authService.getCurrentUserId();
     const selectedGymId = localStorage.getItem('selectedGymId');
     const endpoint = selectedGymId
-      ? `${this.baseUrl}/usersession/gym/${selectedGymId}`
-      : `${this.baseUrl}/usersession`;
+      ? `${this.baseUrl}/userroutegrade/gym/${selectedGymId}`
+      : `${this.baseUrl}/userroutegrade`;
 
     return this.http.get<any[]>(endpoint).pipe(
       map(sessions => {
@@ -54,7 +54,7 @@ export class ClimbService {
   }
 
   getClimb(id: number): Observable<RouteDetails> {
-    const session$ = this.http.get<any[]>(`${this.baseUrl}/usersession`);
+    const session$ = this.http.get<any[]>(`${this.baseUrl}/userroutegrade`);
     const route$ = this.http.get<any>(`${this.baseUrl}/api/route/${id}`);
 
     return forkJoin({ sessions: session$, route: route$ }).pipe(

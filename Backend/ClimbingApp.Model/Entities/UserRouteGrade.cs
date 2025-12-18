@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace ClimbingApp.Model.Entities
 {
-    public class UserSession
+    public class UserRouteGrade
     {
         [JsonPropertyName("userid")]
         public int? UserID { get; set; }

@@ -5,16 +5,16 @@ using NpgsqlTypes;
 
 namespace ClimbingApp.Model.Repositories
 {
-    public class UserSessionRepository : BaseRepository
+    public class UserRouteGradeRepository : BaseRepository
     {
-        public UserSessionRepository(IConfiguration configuration) : base(configuration)
+        public UserRouteGradeRepository(IConfiguration configuration) : base(configuration)
         {
         }
 
-        public List<UserSession> GetUserSessions()
+        public List<UserRouteGrade> GetUserRouteGrades()
         {
             NpgsqlConnection dbConn = null;
-            var userSessions = new List<UserSession>();
+            var userRouteGrades = new List<UserRouteGrade>();
             try
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
@@ -25,7 +25,7 @@ namespace ClimbingApp.Model.Repositories
                 {
                     while (data.Read())
                     {
-                        userSessions.Add(new UserSession
+                        userRouteGrades.Add(new UserRouteGrade
                         {
                             UserID = data["userid"] == DBNull.Value ? (int?)null : Convert.ToInt32(data["userid"]),
                             RouteID = Convert.ToInt32(data["routeid"]),
@@ -38,7 +38,7 @@ namespace ClimbingApp.Model.Repositories
                         });
                     }
                 }
-                return userSessions;
+                return userRouteGrades;
             }
             finally
             {
@@ -46,7 +46,7 @@ namespace ClimbingApp.Model.Repositories
             }
         }
 
-        public UserSession GetUserSessionById(int userId, int routeId)
+        public UserRouteGrade GetUserRouteGradeById(int userId, int routeId)
         {
             NpgsqlConnection dbConn = null;
             try
@@ -62,7 +62,7 @@ namespace ClimbingApp.Model.Repositories
                 {
                     if (data.Read())
                     {
-                        return new UserSession
+                        return new UserRouteGrade
                         {
                             UserID = Convert.ToInt32(data["userid"]),
                             RouteID = Convert.ToInt32(data["routeid"]),
@@ -83,10 +83,10 @@ namespace ClimbingApp.Model.Repositories
             }
         }
 
-        public List<UserSession> GetUserSessionsByUserId(int userId)
+        public List<UserRouteGrade> GetUserRouteGradesByUserId(int userId)
         {
             NpgsqlConnection dbConn = null;
-            var userSessions = new List<UserSession>();
+            var userRouteGrades = new List<UserRouteGrade>();
             try
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
@@ -99,7 +99,7 @@ namespace ClimbingApp.Model.Repositories
                 {
                     while (data.Read())
                     {
-                        userSessions.Add(new UserSession
+                        userRouteGrades.Add(new UserRouteGrade
                         {
                             UserID = data["userid"] == DBNull.Value ? null : Convert.ToInt32(data["userid"]),
                             RouteID = Convert.ToInt32(data["routeid"]),
@@ -112,7 +112,7 @@ namespace ClimbingApp.Model.Repositories
                         });
                     }
                 }
-                return userSessions;
+                return userRouteGrades;
             }
             finally
             {
@@ -120,10 +120,10 @@ namespace ClimbingApp.Model.Repositories
             }
         }
 
-        public List<UserSession> GetUserSessionsByGymId(int gymId)
+        public List<UserRouteGrade> GetUserRouteGradesByGymId(int gymId)
         {
             NpgsqlConnection dbConn = null;
-            var userSessions = new List<UserSession>();
+            var userRouteGrades = new List<UserRouteGrade>();
             try
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
@@ -136,7 +136,7 @@ namespace ClimbingApp.Model.Repositories
                 {
                     while (data.Read())
                     {
-                        userSessions.Add(new UserSession
+                        userRouteGrades.Add(new UserRouteGrade
                         {
                             UserID = data["userid"] == DBNull.Value ? null : Convert.ToInt32(data["userid"]),
                             RouteID = Convert.ToInt32(data["routeid"]),
@@ -149,7 +149,7 @@ namespace ClimbingApp.Model.Repositories
                         });
                     }
                 }
-                return userSessions;
+                return userRouteGrades;
             }
             finally
             {
@@ -157,10 +157,10 @@ namespace ClimbingApp.Model.Repositories
             }
         }
 
-        public List<UserSession> GetUserSessionsByUserIdAndRouteId(int userId, int routeId)
+        public List<UserRouteGrade> GetUserRouteGradesByUserIdAndRouteId(int userId, int routeId)
         {
             NpgsqlConnection dbConn = null;
-            var userSessions = new List<UserSession>();
+            var userRouteGrades = new List<UserRouteGrade>();
             try
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
@@ -174,7 +174,7 @@ namespace ClimbingApp.Model.Repositories
                 {
                     while (data.Read())
                     {
-                        userSessions.Add(new UserSession
+                        userRouteGrades.Add(new UserRouteGrade
                         {
                             UserID = data["userid"] == DBNull.Value ? null : Convert.ToInt32(data["userid"]),
                             RouteID = Convert.ToInt32(data["routeid"]),
@@ -187,7 +187,7 @@ namespace ClimbingApp.Model.Repositories
                         });
                     }
                 }
-                return userSessions;
+                return userRouteGrades;
             }
             finally
             {
@@ -195,7 +195,7 @@ namespace ClimbingApp.Model.Repositories
             }
         }
 
-        public bool InsertUserSession(UserSession userSession)
+        public bool InsertUserRouteGrade(UserRouteGrade userRouteGrade)
         {
             NpgsqlConnection dbConn = null;
             try
@@ -204,18 +204,18 @@ namespace ClimbingApp.Model.Repositories
                 var cmd = dbConn.CreateCommand();
                 cmd.CommandText = "INSERT INTO UserRouteGradeView (userid, routeid, gradefbleau, status) VALUES (@userId, @routeId, @gradeFbleau, @status)";
                 
-                if (userSession.UserID.HasValue)
+                if (userRouteGrade.UserID.HasValue)
                 {
-                    cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userSession.UserID.Value);
+                    cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userRouteGrade.UserID.Value);
                 }
                 else
                 {
                     cmd.Parameters.AddWithValue("@userId", DBNull.Value);
                 }
                 
-                cmd.Parameters.AddWithValue("@routeId", NpgsqlDbType.Integer, userSession.RouteID);
-                cmd.Parameters.AddWithValue("@gradeFbleau", NpgsqlDbType.Varchar, userSession.GradeFbleau);
-                cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Varchar, userSession.Status);
+                cmd.Parameters.AddWithValue("@routeId", NpgsqlDbType.Integer, userRouteGrade.RouteID);
+                cmd.Parameters.AddWithValue("@gradeFbleau", NpgsqlDbType.Varchar, userRouteGrade.GradeFbleau);
+                cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Varchar, userRouteGrade.Status);
                 
                 bool result = InsertData(dbConn, cmd);
                 return result;
@@ -226,30 +226,30 @@ namespace ClimbingApp.Model.Repositories
             }
         }
 
-        public bool UpdateUserSession(UserSession userSession)
+        public bool UpdateUserRouteGrade(UserRouteGrade userRouteGrade)
         {
             var dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
             cmd.CommandText = "UPDATE UserRouteGradeView SET gradefbleau = @gradeFbleau, status = @status WHERE userid = @userId AND routeid = @routeId";
             
-            if (userSession.UserID.HasValue)
+            if (userRouteGrade.UserID.HasValue)
             {
-                cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userSession.UserID.Value);
+                cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userRouteGrade.UserID.Value);
             }
             else
             {
                 cmd.Parameters.AddWithValue("@userId", DBNull.Value);
             }
             
-            cmd.Parameters.AddWithValue("@routeId", NpgsqlDbType.Integer, userSession.RouteID);
-            cmd.Parameters.AddWithValue("@gradeFbleau", NpgsqlDbType.Varchar, userSession.GradeFbleau);
-            cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Varchar, userSession.Status);
+            cmd.Parameters.AddWithValue("@routeId", NpgsqlDbType.Integer, userRouteGrade.RouteID);
+            cmd.Parameters.AddWithValue("@gradeFbleau", NpgsqlDbType.Varchar, userRouteGrade.GradeFbleau);
+            cmd.Parameters.AddWithValue("@status", NpgsqlDbType.Varchar, userRouteGrade.Status);
             
             bool result = UpdateData(dbConn, cmd);
             return result;
         }
 
-        public bool DeleteUserSession(int userId, int routeId)
+        public bool DeleteUserRouteGrade(int userId, int routeId)
         {
             var dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();

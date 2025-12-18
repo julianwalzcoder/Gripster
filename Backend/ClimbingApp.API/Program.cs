@@ -18,7 +18,7 @@ builder.Services.AddScoped<SessionRepository>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<UserRouteRepository>();
 builder.Services.AddScoped<UserSessionRouteRepository>(); // <-- add this
-builder.Services.AddScoped(sp => new UserSessionRepository(sp.GetRequiredService<IConfiguration>()));
+builder.Services.AddScoped(sp => new UserRouteGradeRepository(sp.GetRequiredService<IConfiguration>()));
 
 var key = builder.Configuration["Jwt:Key"];
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
