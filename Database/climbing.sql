@@ -1,6 +1,11 @@
 --
--- PostgreSQL database dump (cleaned: removed Session and SessionRoute)
+-- PostgreSQL database dump
 --
+
+\restrict jMd65NN8ua0BuofzG3NmDmvEt74yRRMfAMay9fzoWrYDSoIEk3dCFoIYtVaAm53
+
+-- Dumped from database version 17.6 (Postgres.app)
+-- Dumped by pg_dump version 17.6 (Postgres.app)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,6 +32,25 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
+
+--
+-- Name: log_userroute_change(); Type: FUNCTION; Schema: public; Owner: mjakobs
+--
+
+CREATE FUNCTION public.log_userroute_change() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW."Status" IS NOT NULL THEN
+    INSERT INTO public."UserSessionRoute"("UserID","RouteID","Status","LoggedAt")
+    VALUES (NEW."UserID", NEW."RouteID", NEW."Status", now());
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.log_userroute_change() OWNER TO mjakobs;
 
 SET default_tablespace = '';
 
@@ -206,11 +230,50 @@ CREATE TABLE public."UserRoute" (
     "UserID" integer NOT NULL,
     "RouteID" integer NOT NULL,
     "Status" character varying(10),
-    "Rating" integer
+    "Rating" integer,
+    CONSTRAINT userroute_rating_range CHECK ((("Rating" IS NULL) OR (("Rating" >= 1) AND ("Rating" <= 5))))
 );
 
 
 ALTER TABLE public."UserRoute" OWNER TO postgres;
+
+--
+-- Name: UserSessionRoute; Type: TABLE; Schema: public; Owner: mjakobs
+--
+
+CREATE TABLE public."UserSessionRoute" (
+    "ID" integer NOT NULL,
+    "UserID" integer NOT NULL,
+    "RouteID" integer NOT NULL,
+    "Status" character varying(10) NOT NULL,
+    "LoggedAt" timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT "UserSessionRoute_Status_check" CHECK ((("Status")::text = ANY ((ARRAY['Attempted'::character varying, 'Top'::character varying, 'Flash'::character varying])::text[])))
+);
+
+
+ALTER TABLE public."UserSessionRoute" OWNER TO mjakobs;
+
+--
+-- Name: UserSessionRoute_ID_seq; Type: SEQUENCE; Schema: public; Owner: mjakobs
+--
+
+CREATE SEQUENCE public."UserSessionRoute_ID_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."UserSessionRoute_ID_seq" OWNER TO mjakobs;
+
+--
+-- Name: UserSessionRoute_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: mjakobs
+--
+
+ALTER SEQUENCE public."UserSessionRoute_ID_seq" OWNED BY public."UserSessionRoute"."ID";
+
 
 --
 -- Name: User_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -291,6 +354,13 @@ ALTER TABLE ONLY public."User" ALTER COLUMN "ID" SET DEFAULT nextval('public."Us
 
 
 --
+-- Name: UserSessionRoute ID; Type: DEFAULT; Schema: public; Owner: mjakobs
+--
+
+ALTER TABLE ONLY public."UserSessionRoute" ALTER COLUMN "ID" SET DEFAULT nextval('public."UserSessionRoute_ID_seq"'::regclass);
+
+
+--
 -- Data for Name: Admin; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -300,6 +370,7 @@ COPY public."Admin" ("ID", "GymID", "UserID") FROM stdin;
 3	3	3
 4	4	4
 5	5	5
+8	1	8
 \.
 
 
@@ -348,8 +419,6 @@ COPY public."Route" ("ID", "GymID", "GradeID", "SetDate", "RemoveDate", "AdminID
 11	1	3	2025-02-03	\N	1
 12	1	4	2025-02-04	\N	1
 13	2	5	2025-02-05	\N	2
-14	2	1	2025-02-06	\N	2
-15	2	2	2025-02-07	\N	2
 16	2	3	2025-02-08	\N	2
 17	3	4	2025-02-09	\N	3
 18	3	5	2025-02-10	\N	3
@@ -363,6 +432,9 @@ COPY public."Route" ("ID", "GymID", "GradeID", "SetDate", "RemoveDate", "AdminID
 26	5	3	2025-02-18	\N	5
 27	5	4	2025-02-19	\N	5
 28	5	5	2025-02-20	\N	5
+29	3	2	2025-12-18	\N	8
+14	2	1	2025-02-06	\N	8
+15	2	2	2025-02-07	\N	8
 \.
 
 
@@ -379,6 +451,7 @@ COPY public."User" ("ID", "Name", "Username", "Mail", "PasswordHash", "Street", 
 6	\N	boulderking	boulderking@cphsouth.com	$2a$06$.JoUWsFhMOUsTpWtOPFa.uBggvSGQ8fy5lpcVA084o4DUphgbFoaW	\N	\N	\N	\N	user
 7	\N	climber01	climber01@example.com	$2a$06$B5T0aeUPRqVcGPuu2/u5Dem17pg4aG7LI4.w6BY/j.FZ1a.pPc.3q	\N	\N	\N	\N	user
 8	\N	routesetter01	routesetter01@example.com	$2a$06$kWX38pzomNiVgEAk3hZxGO1OAk/b2uNzzlNLUUV0uNFxIio92vY/G	\N	\N	\N	\N	admin
+9	test	test	test	$2a$06$C53Lo2iMRnZDChQ1TNpn9.sGWegByWvFfd2lHKg3DNVKmmPJ2hCjK	test	341	112312	jdsafasj	user
 \.
 
 
@@ -399,6 +472,14 @@ COPY public."UserRoute" ("UserID", "RouteID", "Status", "Rating") FROM stdin;
 1	14	Top	4
 1	12	Top	5
 1	8	Attempted	2
+\.
+
+
+--
+-- Data for Name: UserSessionRoute; Type: TABLE DATA; Schema: public; Owner: mjakobs
+--
+
+COPY public."UserSessionRoute" ("ID", "UserID", "RouteID", "Status", "LoggedAt") FROM stdin;
 \.
 
 
@@ -427,14 +508,21 @@ SELECT pg_catalog.setval('public."Gym_ID_seq"', 5, true);
 -- Name: Route_ID_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Route_ID_seq"', 28, true);
+SELECT pg_catalog.setval('public."Route_ID_seq"', 29, true);
+
+
+--
+-- Name: UserSessionRoute_ID_seq; Type: SEQUENCE SET; Schema: public; Owner: mjakobs
+--
+
+SELECT pg_catalog.setval('public."UserSessionRoute_ID_seq"', 1, false);
 
 
 --
 -- Name: User_ID_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."User_ID_seq"', 8, true);
+SELECT pg_catalog.setval('public."User_ID_seq"', 9, true);
 
 
 --
@@ -470,11 +558,27 @@ ALTER TABLE ONLY public."Route"
 
 
 --
+-- Name: Admin UniqueAdminPerUser; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Admin"
+    ADD CONSTRAINT "UniqueAdminPerUser" UNIQUE ("UserID");
+
+
+--
 -- Name: UserRoute UserRoute_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."UserRoute"
     ADD CONSTRAINT "UserRoute_pkey" PRIMARY KEY ("UserID", "RouteID");
+
+
+--
+-- Name: UserSessionRoute UserSessionRoute_pkey; Type: CONSTRAINT; Schema: public; Owner: mjakobs
+--
+
+ALTER TABLE ONLY public."UserSessionRoute"
+    ADD CONSTRAINT "UserSessionRoute_pkey" PRIMARY KEY ("ID");
 
 
 --
@@ -502,11 +606,24 @@ ALTER TABLE ONLY public."User"
 
 
 --
--- Name: Admin UniqueAdminPerUser; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: idx_usr_user_date; Type: INDEX; Schema: public; Owner: mjakobs
 --
 
-ALTER TABLE ONLY public."Admin"
-    ADD CONSTRAINT "UniqueAdminPerUser" UNIQUE ("UserID");
+CREATE INDEX idx_usr_user_date ON public."UserSessionRoute" USING btree ("UserID", "LoggedAt" DESC);
+
+
+--
+-- Name: idx_usr_user_route_date; Type: INDEX; Schema: public; Owner: mjakobs
+--
+
+CREATE INDEX idx_usr_user_route_date ON public."UserSessionRoute" USING btree ("UserID", "RouteID", "LoggedAt" DESC);
+
+
+--
+-- Name: UserRoute trg_log_userroute; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER trg_log_userroute AFTER INSERT OR UPDATE ON public."UserRoute" FOR EACH ROW EXECUTE FUNCTION public.log_userroute_change();
 
 
 --
@@ -566,62 +683,24 @@ ALTER TABLE ONLY public."UserRoute"
 
 
 --
--- Constraints aktualisieren
+-- Name: UserSessionRoute UserSessionRoute_RouteID_fkey; Type: FK CONSTRAINT; Schema: public; Owner: mjakobs
 --
 
-ALTER TABLE ONLY public."UserRoute"
-    DROP CONSTRAINT IF EXISTS userroute_rating_range;
-
-ALTER TABLE ONLY public."UserRoute"
-    ADD CONSTRAINT userroute_rating_range
-    CHECK ("Rating" IS NULL OR ("Rating" BETWEEN 1 AND 5));
+ALTER TABLE ONLY public."UserSessionRoute"
+    ADD CONSTRAINT "UserSessionRoute_RouteID_fkey" FOREIGN KEY ("RouteID") REFERENCES public."Route"("ID") ON DELETE CASCADE;
 
 
--- ============================================================================
--- Session logging additions (kept): UserSessionRoute
--- ============================================================================
+--
+-- Name: UserSessionRoute UserSessionRoute_UserID_fkey; Type: FK CONSTRAINT; Schema: public; Owner: mjakobs
+--
 
--- Table: UserSessionRoute
-CREATE TABLE IF NOT EXISTS public."UserSessionRoute" (
-  "ID"        SERIAL PRIMARY KEY,
-  "UserID"    INTEGER NOT NULL REFERENCES public."User"("ID") ON DELETE CASCADE,
-  "RouteID"   INTEGER NOT NULL REFERENCES public."Route"("ID") ON DELETE CASCADE,
-  "Status"    VARCHAR(10) NOT NULL,  -- Attempted | Top | Flash
-  "LoggedAt"  TIMESTAMPTZ NOT NULL DEFAULT now(),
-  CHECK ("Status" IN ('Attempted','Top','Flash'))
-);
+ALTER TABLE ONLY public."UserSessionRoute"
+    ADD CONSTRAINT "UserSessionRoute_UserID_fkey" FOREIGN KEY ("UserID") REFERENCES public."User"("ID") ON DELETE CASCADE;
 
--- Helpful indexes for common queries (by user/date and user/route/date)
-CREATE INDEX IF NOT EXISTS idx_usr_user_date
-  ON public."UserSessionRoute"("UserID","LoggedAt" DESC);
-
-CREATE INDEX IF NOT EXISTS idx_usr_user_route_date
-  ON public."UserSessionRoute"("UserID","RouteID","LoggedAt" DESC);
-
--- Optional: Trigger to auto-log when UserRoute changes (insert/update)
-CREATE OR REPLACE FUNCTION public.log_userroute_change()
-RETURNS TRIGGER AS $$
-BEGIN
-  -- Only log when Status is present to satisfy NOT NULL constraint
-  IF NEW."Status" IS NOT NULL THEN
-    INSERT INTO public."UserSessionRoute"("UserID","RouteID","Status","LoggedAt")
-    VALUES (NEW."UserID", NEW."RouteID", NEW."Status", now());
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS trg_log_userroute ON public."UserRoute";
-CREATE TRIGGER trg_log_userroute
-AFTER INSERT OR UPDATE ON public."UserRoute"
-FOR EACH ROW
-EXECUTE FUNCTION public.log_userroute_change();
-
--- ============================================================================
--- End session logging additions
--- ============================================================================
 
 --
 -- PostgreSQL database dump complete
 --
+
+\unrestrict jMd65NN8ua0BuofzG3NmDmvEt74yRRMfAMay9fzoWrYDSoIEk3dCFoIYtVaAm53
 
