@@ -126,3 +126,6 @@
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Tests/obj/Debug/net9.0/ClimbingApp.Tests.pdb
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Tests/obj/Debug/net9.0/ClimbingApp.Tests.genruntimeconfig.cache
 /Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Tests/obj/Debug/net9.0/ref/ClimbingApp.Tests.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Tests/bin/Debug/net9.0/CoverletSourceRootsMapping_ClimbingApp.Tests
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Tests/bin/Debug/net9.0/Microsoft.DotNet.PlatformAbstractions.dll
+/Users/mjakobs/Desktop/development/Gripster/Backend/ClimbingApp.Tests/bin/Debug/net9.0/Microsoft.Extensions.DependencyModel.dll
