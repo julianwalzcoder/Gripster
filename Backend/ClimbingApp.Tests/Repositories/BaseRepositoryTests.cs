@@ -162,10 +162,10 @@ namespace ClimbingApp.Tests.Repositories
             // Assert - All methods accept NpgsqlConnection and NpgsqlCommand
             var expectedParams = new[] { typeof(NpgsqlConnection), typeof(NpgsqlCommand) };
             
-            Assert.Equal(expectedParams, getDataMethod.GetParameters().Select(p => p.ParameterType).ToArray());
-            Assert.Equal(expectedParams, insertDataMethod.GetParameters().Select(p => p.ParameterType).ToArray());
-            Assert.Equal(expectedParams, updateDataMethod.GetParameters().Select(p => p.ParameterType).ToArray());
-            Assert.Equal(expectedParams, deleteDataMethod.GetParameters().Select(p => p.ParameterType).ToArray());
+            Assert.Equal(expectedParams, getDataMethod!.GetParameters().Select(p => p.ParameterType).ToArray());
+            Assert.Equal(expectedParams, insertDataMethod!.GetParameters().Select(p => p.ParameterType).ToArray());
+            Assert.Equal(expectedParams, updateDataMethod!.GetParameters().Select(p => p.ParameterType).ToArray());
+            Assert.Equal(expectedParams, deleteDataMethod!.GetParameters().Select(p => p.ParameterType).ToArray());
         }
 
         /// <summary>

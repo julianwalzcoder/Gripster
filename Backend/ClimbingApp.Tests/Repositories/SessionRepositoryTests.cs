@@ -301,7 +301,7 @@ namespace ClimbingApp.Tests.Repositories
             var loggedAt = DateTime.Now;
             var expectedId = 42;
 
-            _mockRepository.Setup(r => r.CreateSession(userId, routeId, null, It.IsAny<DateTime>()))
+            _mockRepository.Setup(r => r.CreateSession(userId, routeId, null!, It.IsAny<DateTime>()))
                 .Returns(expectedId);
 
             // Act

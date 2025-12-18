@@ -57,7 +57,7 @@ namespace ClimbingApp.Tests.Repositories
         public void GetRouteById_InvalidId_ReturnsNull()
         {
             // Arrange
-            _mockRepository.Setup(r => r.GetRouteById(999)).Returns((Climb)null);
+            _mockRepository.Setup(r => r.GetRouteById(999)).Returns((Climb?)null);
 
             // Act
             var result = _mockRepository.Object.GetRouteById(999);

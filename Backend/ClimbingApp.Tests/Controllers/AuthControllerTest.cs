@@ -49,7 +49,12 @@ public class AuthControllerTests
         { 
             Username = "", 
             Password = "password",
-            Mail = "test@test.com"
+            Mail = "test@test.com",
+            Name = "Test User",
+            Street = "Test Street",
+            StreetNumber = 123,
+            Postcode = 12345,
+            City = "Test City"
         });
         Assert.IsType<BadRequestObjectResult>(result);
     }
@@ -61,7 +66,12 @@ public class AuthControllerTests
         { 
             Username = "testuser", 
             Password = "",
-            Mail = "test@test.com"
+            Mail = "test@test.com",
+            Name = "Test User",
+            Street = "Test Street",
+            StreetNumber = 123,
+            Postcode = 12345,
+            City = "Test City"
         });
         Assert.IsType<BadRequestObjectResult>(result);
     }
@@ -84,7 +94,12 @@ public class AuthControllerTests
         { 
             Username = "newuser", 
             Password = "password",
-            Mail = "new@test.com"
+            Mail = "new@test.com",
+            Name = "New User",
+            Street = "New Street",
+            StreetNumber = 456,
+            Postcode = 67890,
+            City = "New City"
         });
         
         Assert.IsType<OkObjectResult>(result);

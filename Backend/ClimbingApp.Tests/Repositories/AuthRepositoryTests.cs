@@ -56,7 +56,7 @@ namespace ClimbingApp.Tests.Repositories
         {
             // Arrange
             _mockRepository.Setup(r => r.ValidateUser("wronguser", "wrongpass"))
-                .Returns((User)null);
+                .Returns((User?)null);
 
             // Act
             var result = _mockRepository.Object.ValidateUser("wronguser", "wrongpass");
@@ -96,7 +96,7 @@ namespace ClimbingApp.Tests.Repositories
         {
             // Arrange
             _mockRepository.Setup(r => r.ValidateUser("", "password"))
-                .Returns((User)null);
+                .Returns((User?)null);
 
             // Act
             var result = _mockRepository.Object.ValidateUser("", "password");
@@ -110,7 +110,7 @@ namespace ClimbingApp.Tests.Repositories
         {
             // Arrange
             _mockRepository.Setup(r => r.ValidateUser("testuser", ""))
-                .Returns((User)null);
+                .Returns((User?)null);
 
             // Act
             var result = _mockRepository.Object.ValidateUser("testuser", "");
@@ -123,11 +123,11 @@ namespace ClimbingApp.Tests.Repositories
         public void ValidateUser_NullUsername_ReturnsNull()
         {
             // Arrange
-            _mockRepository.Setup(r => r.ValidateUser(null, "password"))
-                .Returns((User)null);
+            _mockRepository.Setup(r => r.ValidateUser(null!, "password"))
+                .Returns((User?)null);
 
             // Act
-            var result = _mockRepository.Object.ValidateUser(null, "password");
+            var result = _mockRepository.Object.ValidateUser(null!, "password");
 
             // Assert
             Assert.Null(result);
@@ -137,11 +137,11 @@ namespace ClimbingApp.Tests.Repositories
         public void ValidateUser_NullPassword_ReturnsNull()
         {
             // Arrange
-            _mockRepository.Setup(r => r.ValidateUser("testuser", null))
-                .Returns((User)null);
+            _mockRepository.Setup(r => r.ValidateUser("testuser", null!))
+                .Returns((User?)null);
 
             // Act
-            var result = _mockRepository.Object.ValidateUser("testuser", null);
+            var result = _mockRepository.Object.ValidateUser("testuser", null!);
 
             // Assert
             Assert.Null(result);
