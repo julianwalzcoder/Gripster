@@ -162,6 +162,7 @@ WHERE ""ID"" = @id
 
     public virtual bool InsertUser(User u, string plainPassword)
     {
+        Console.WriteLine("Inserting user with username: " + u.Username);
         NpgsqlConnection dbConn = null;
         try
         {

@@ -56,9 +56,14 @@ namespace ClimbingApp.API.Controllers
 
             var user = new User(0)
             {
+                Name = req.Name,
                 Username = req.Username,
                 Mail = req.Mail,
-                Role = "user" // enforce normal user
+                Street = req.Street,
+                StreetNumber = req.StreetNumber,
+                Postcode = req.Postcode,
+                City = req.City,
+                Role = "user"
             };
 
             var success = _userRepo.InsertUser(user, req.Password); // uses crypt() insert
@@ -113,6 +118,11 @@ namespace ClimbingApp.API.Controllers
     {
         public required string Username { get; set; }
         public required string Password { get; set; }
-        public string? Mail { get; set; }
+        public required string Mail { get; set; }
+        public required string Name { get; set; }
+        public required string Street { get; set; }
+        public required int StreetNumber { get; set; }
+        public required int Postcode { get; set; }
+        public required string City { get; set; }
     }
 }
