@@ -10,7 +10,12 @@ public class SessionRepository : BaseRepository
 {
     public SessionRepository(IConfiguration configuration) : base(configuration) { }
     
-    public Session GetSessionById(int id)
+    /// <summary>
+    /// Retrieves a single session by its ID
+    /// </summary>
+    /// <param name="id">The session ID</param>
+    /// <returns>Session object if found, otherwise null</returns>
+    public virtual Session GetSessionById(int id)
     {
         NpgsqlConnection dbConn = null;
         try
@@ -41,7 +46,11 @@ public class SessionRepository : BaseRepository
         }
     }
     
-    public List<Session> GetSessions()
+    /// <summary>
+    /// Retrieves all sessions from the database
+    /// </summary>
+    /// <returns>List of all sessions</returns>
+    public virtual List<Session> GetSessions()
     {
         NpgsqlConnection dbConn = null;
         var sessions = new List<Session>();
@@ -76,7 +85,7 @@ public class SessionRepository : BaseRepository
     }
     
     //Is this needed?
-    public bool InsertSession(Session s)
+    public virtual bool InsertSession(Session s)
     {
         NpgsqlConnection dbConn = null;
         try
@@ -103,7 +112,7 @@ values
         }
     }
     
-    public bool UpdateSession(Session s)
+    public virtual bool UpdateSession(Session s)
     {
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
@@ -125,7 +134,7 @@ where
         return result;
     }
     
-    public bool DeleteSession(int id)
+    public virtual bool DeleteSession(int id)
     {
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
@@ -139,7 +148,12 @@ where ""ID"" = @id
         return result;
     }
 
-    public List<Session> GetSessionsByUser(int userId)
+    /// <summary>
+    /// Retrieves all sessions for a specific user
+    /// </summary>
+    /// <param name="userId">The user ID</param>
+    /// <returns>List of sessions for the specified user</returns>
+    public virtual List<Session> GetSessionsByUser(int userId)
     {
         var list = new List<Session>();
         using var dbConn = new NpgsqlConnection(ConnectionString);
@@ -165,7 +179,7 @@ where ""ID"" = @id
         return list;
     }
 
-    public int CreateSession(int userId, int routeId, string? status, DateTime loggedAt)
+    public virtual int CreateSession(int userId, int routeId, string? status, DateTime loggedAt)
     {
         using var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
