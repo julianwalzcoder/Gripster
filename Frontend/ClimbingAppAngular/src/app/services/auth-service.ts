@@ -14,29 +14,99 @@ export class AuthService {
         return !!localStorage.getItem(this.TOKEN_KEY);
     }
 
+    register(payload: {
+        name?: string;
+        username: string;
+        mail?: string;
+        password: string;
+        street?: string;
+        streetNumber?: number;
+        postcode?: number;
+        city?: string;
+    }) {
+        return this.http.post<{ token: string; username: string; role: string }>(
+            `${this.baseUrl}/register`,
+            payload
+        ).pipe(
+            tap(res => {
+                localStorage.setItem(this.TOKEN_KEY, res.token);
+                localStorage.setItem('username', res.username);
+                localStorage.setItem('role', res.role);
+                this.loggedIn.next(true);
+            })
+        );
+    }
+
     login(username: string, password: string) {
-        return this.http.post<any>(`${this.baseUrl}/login`, { username, password })
-            .pipe(
-                tap(res => {
-                    localStorage.setItem(this.TOKEN_KEY, res.token);
-                    this.loggedIn.next(true);
-                })
-            );
+        return this.http.post<{ token: string; username: string; role: string; adminId?: number }>(
+            `${this.baseUrl}/login`,
+            { username, password }
+        ).pipe(
+            tap(res => {
+                localStorage.setItem(this.TOKEN_KEY, res.token);
+                localStorage.setItem('username', res.username);
+                localStorage.setItem('role', res.role);
+                if (res.adminId) {
+                    localStorage.setItem('adminId', res.adminId.toString());
+                }
+                this.loggedIn.next(true);
+            })
+        );
     }
 
     logout() {
         localStorage.removeItem(this.TOKEN_KEY);
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+        localStorage.removeItem('adminId');
         this.loggedIn.next(false);
     }
 
     isLoggedIn(): boolean {
         return this.loggedIn.value;
     }
+
     get isLoggedIn$() {
         return this.loggedIn.asObservable();
     }
 
     getToken(): string | null {
         return localStorage.getItem(this.TOKEN_KEY);
+    }
+
+    //checks admin role
+    isAdmin(): boolean {
+        const role = localStorage.getItem('role');
+        console.log('role.:', role)
+        return role === 'admin'
+    }
+
+    getCurrentUserId(): number | null {
+        const token = localStorage.getItem(this.TOKEN_KEY);
+        if (!token){
+            console.log('No token found');
+            return null;
+        } 
+        
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            console.log('JWT Payload:', payload);
+            // ClaimTypes.NameIdentifier typically maps to one of these in JWT
+            const userId = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] 
+                        || payload.nameid 
+                        || payload.sub 
+                        || payload.userId 
+                        || payload.id;
+            console.log('Extracted userId:', userId);
+            return userId ? Number(userId) : null;
+        } catch (e) {
+            console.error('Error parsing token:', e);
+            return null;
+        }
+    }
+
+    getAdminId(): number | null {
+        const adminId = localStorage.getItem('adminId');
+        return adminId ? Number(adminId) : null;
     }
 }

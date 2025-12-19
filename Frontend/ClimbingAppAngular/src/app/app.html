@@ -1,14 +1,55 @@
-<mat-toolbar>
-  <button mat-icon-button class="example-icon" aria-label="Open main menu" [matMenuTriggerFor]="menu">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button routerLink="/climbs" mat-menu-item>All climbs</button>
-    <button routerLink="/my-climbs" mat-menu-item>My Climbs</button>
-    <button routerLink="/my-projects" mat-menu-item>My Projects</button>
-  </mat-menu>
-  <span>Gripster</span>
-  <span class="spacer" style="flex: 1 1 auto;"></span>
-  <button *ngIf="(auth.isLoggedIn$ | async)" (click)="logout()" mat-raised-button color="warn">Logout</button>
-</mat-toolbar>
-<router-outlet />
+<div class="app-container">
+
+  <mat-toolbar>
+    <button mat-icon-button class="example-icon" aria-label="Open main menu" [matMenuTriggerFor]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button routerLink="/climbs/{{ climb.getGymID() }}" mat-menu-item>Climbs</button>
+      <button routerLink="/my-projects" mat-menu-item>Sessions</button>
+      <button routerLink="/my-climbs" mat-menu-item>My Climbs</button>
+      <button routerLink="/my-projects" mat-menu-item>My Projects</button>
+      <button routerLink="/select-gym" mat-menu-item>Change Gym</button>
+    </mat-menu>
+
+    <a routerLink="/climbs/{{ climb.getGymID() }}" class="logo-link"
+      style="display:flex; align-items:center; text-decoration:none; color: inherit;">
+      <img src="assets/images/gripster.jpg" style="height:40px; margin-right:10px;">
+      <span class="logo-text">Gripster</span>
+    </a>
+
+    <span class="spacer" style="flex: 1 1 auto;"></span>
+
+    <button *ngIf="auth.isAdmin()" mat-raised-button color="primary" routerLink="/climb-add">
+      Add Climb
+    </button>
+
+    <span class="spacer" style="flex: 0 0 5px;"></span>
+
+    <button *ngIf="(auth.isLoggedIn$ | async)" (click)="logout()" mat-raised-button color="accent">Logout</button>
+  </mat-toolbar>
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+
+
+  <footer style="background-color:#7070D5; color:white; padding:16px; text-align:center;">
+    <button (click)="showText('terms')"
+      style="color:white; background:none; border:none; cursor:pointer;">Terms</button> |
+    <button (click)="showText('privacy')"
+      style="color:white; background:none; border:none; cursor:pointer;">Privacy</button> |
+    <button (click)="showText('eu')" style="color:white; background:none; border:none; cursor:pointer;">EU
+      Legal</button>
+    <p style="margin-top:8px; font-size:0.85rem;">© 2025 Gripster, Inc.</p>
+
+  </footer>
+
+  <div *ngIf="popupText"
+    style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; padding:20px; overflow:auto; z-index:1000;">
+    <button (click)="popupText=null" style="float:right; padding:8px 12px; cursor:pointer;">Close</button>
+    <div [innerHTML]="popupText"></div>
+  </div>
+
+</div>

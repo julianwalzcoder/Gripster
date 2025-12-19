@@ -1,24 +1,50 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Climb } from '../model/climb';
+import { AuthService } from './auth-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClimbService {
   baseUrl = 'http://localhost:5098';
+  private authService = inject(AuthService);
+
   constructor(private http: HttpClient) { }
 
   getClimbs(): Observable<Climb[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/usersession`).pipe(
+    const currentUserId = this.authService.getCurrentUserId();
+    const selectedGymId = localStorage.getItem('selectedGymId');
+
+    // If gym is selected, fetch sessions filtered by gym; otherwise fetch all
+    const endpoint = selectedGymId
+      ? `${this.baseUrl}/usersession/gym/${selectedGymId}`
+      : `${this.baseUrl}/usersession`;
+
+    return this.http.get<any[]>(endpoint).pipe(
       map(sessions => {
         console.log('Raw sessions from API:', sessions);
-        return sessions.map(session => {
+
+        // Create a map to store unique routes by routeId
+        const uniqueRoutes = new Map<number, any>();
+
+        sessions.forEach(session => {
+          const routeId = session.routeID ?? session.routeid;
+          const sessionUserId = session.userID ?? session.userid;
+
+          // If we haven't seen this route yet, or if this is the current user's session, add/update it
+          if (!uniqueRoutes.has(routeId) || sessionUserId === currentUserId) {
+            uniqueRoutes.set(routeId, session);
+          }
+        });
+
+        // Convert map values back to array and map to Climb objects
+        return Array.from(uniqueRoutes.values()).map(session => {
           console.log('Mapping session:', session);
           return {
-            userId: session.userID ?? session.userid,
+            userId: currentUserId, // Always use the current logged-in user's ID
             routeId: session.routeID ?? session.routeid,
             grade: session.gradeFbleau ?? session.gradefbleau,
             status: session.status,
@@ -27,14 +53,16 @@ export class ClimbService {
             removeDate: session.removeDate ?? session.removedate,
             adminId: session.adminID ?? session.adminid,
             climbId: session.routeID ?? session.routeid
-          };
+          } as Climb;
         });
       })
     );
   }
 
   getAverageRating(routeId: number): Observable<number | null> {
-    return this.http.get<number | null>('http://localhost:5098/api/ClimbingRoute/average-rating/' + routeId);
+    return this.http.get<number | null>(
+      `${this.baseUrl}/api/ClimbingRoute/average-rating/${routeId}`
+    );
   }
 
   getClimb(id: number): Observable<Climb> {
@@ -61,35 +89,41 @@ export class ClimbService {
     );
   }
 
-  createClimb(climb: Climb): Observable<any> {
-    return this.http.post(`${this.baseUrl}/climb`, climb);
+  // ADMIN: create new climb (route)
+  addClimb(climb: Climb): Observable<any> {
+    return this.http.post(`${this.baseUrl}/climb`, climb); // POST /climb
   }
 
-  updateClimbStatus(userID: number, routeID: number, status: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/UserRoute/${userID}/${routeID}/${status}`, {});
+  // ADMIN: edit existing climb (route data)
+  updateClimbAdmin(climb: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/Climb`, climb);
   }
-
-  updateClimb(climb: Climb): Observable<any> {
-    return this.http.put(`${this.baseUrl}/climb`, climb);
-  }
-
+  
+  // ADMIN: delete climb
   deleteClimb(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/climb/${id}`);
   }
 
-  addClimb(climb: Climb): Observable<any> {
-    return this.http.post(`${this.baseUrl}/climb`, climb);
-  }
-
-  setRating(userId: number, routeId: number, rating: number | null) {
-    return this.http.post<void>(
-      `http://localhost:5098/UserRoute/${userId}/${routeId}/rating`,
-      rating,
-      { headers: { 'Content-Type': 'application/json' } }
+  // USER: update personal status on a climb
+  updateClimbStatus(userID: number, routeID: number, status: string): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/UserRoute/${userID}/${routeID}/status/${encodeURIComponent(status)}`,
+      {}
     );
   }
 
+  // USER: rate a climb
+  setRating(userId: number, routeId: number, rating: number | null): Observable<any> {
+    return this.http.post(`${this.baseUrl}/UserRoute/${userId}/${routeId}/rating`, rating);
+  }
+
   getUserRating(userId: number, routeId: number): Observable<number | null> {
-    return this.http.get<number | null>(`http://localhost:5098/UserRoute/${userId}/${routeId}/rating`);
+    return this.http.get<number | null>(
+      `${this.baseUrl}/UserRoute/${userId}/${routeId}/rating`
+    );
+  }
+  getGymID() {
+    return localStorage.getItem('selectedGymId');
   }
 }
+

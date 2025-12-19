@@ -43,38 +43,23 @@ public class GymRepository : BaseRepository
         }
     }
     
-    public List<Gym> GetGyms()
+    public List<(int Id, string Name)> GetGyms()
     {
-        NpgsqlConnection dbConn = null;
-        var gyms = new List<Gym>();
-        try
+        var gyms = new List<(int, string)>();
+        using var dbConn = new NpgsqlConnection(ConnectionString);
+        var cmd = dbConn.CreateCommand();
+        cmd.CommandText = @"SELECT ""ID"", ""Name"" FROM ""Gym"" ORDER BY ""Name""";
+        var reader = GetData(dbConn, cmd);
+        if (reader != null)
         {
-            dbConn = new NpgsqlConnection(ConnectionString);
-            var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "select * from \"Gym\"";
-            
-            var data = GetData(dbConn, cmd);
-            if (data != null)
+            while (reader.Read())
             {
-                while (data.Read())
-                {
-                    Gym g = new Gym(Convert.ToInt32(data["ID"]))
-                    {
-                        Name = data["Name"].ToString(),
-                        Street = data["Street"].ToString(),
-                        StreetNumber = Convert.ToInt32(data["StreetNumber"]),
-                        Postcode = Convert.ToInt32(data["Postcode"]),
-                        City = data["City"].ToString()
-                    };
-                    gyms.Add(g);
-                }
+                var id = (int)reader["ID"];
+                var name = reader["Name"]?.ToString() ?? "";
+                gyms.Add((id, name));
             }
-            return gyms;
         }
-        finally
-        {
-            dbConn?.Close();
-        }
+        return gyms;
     }
     
     public bool InsertGym(Gym g)

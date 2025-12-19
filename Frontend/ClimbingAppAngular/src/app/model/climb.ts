@@ -9,11 +9,12 @@
 export interface Climb {
   userId?: number;
   routeId: number;
+  gradeId?: number;
   grade: string;
   status: string;
   gymId: number;
-  setDate: string;
-  removeDate?: string;
+  setDate: Date;
+  removeDate?: Date;
   adminId: number;
   
   // Alias for compatibility

@@ -16,6 +16,7 @@ builder.Services.AddScoped<AdminRepository>();
 builder.Services.AddScoped<GradeRepository>();
 builder.Services.AddScoped<SessionRepository>();
 builder.Services.AddScoped<SessionRouteRepository>();
+builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<UserRouteRepository>();
 builder.Services.AddScoped(sp => new UserSessionRepository(sp.GetRequiredService<IConfiguration>()));
 

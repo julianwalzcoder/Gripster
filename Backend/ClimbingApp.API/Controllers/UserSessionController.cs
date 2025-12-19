@@ -45,6 +45,12 @@ namespace ClimbingApp.API.Controllers
             return Ok(Repository.GetUserSessionsByUserId(userId));
         }
 
+        [HttpGet("gym/{gymId}")]
+        public ActionResult<IEnumerable<UserSession>> GetUserSessionsByGymId([FromRoute] int gymId)
+        {
+            return Ok(Repository.GetUserSessionsByGymId(gymId));
+        }
+
         [HttpGet("{userId}/{routeId}/details")]
         public ActionResult<IEnumerable<UserSession>> GetUserSessionsByUserIdAndRouteId([FromRoute] int userId, [FromRoute] int routeId)
         {

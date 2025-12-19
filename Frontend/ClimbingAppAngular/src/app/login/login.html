@@ -2,26 +2,83 @@
     <mat-card>
         <mat-card-header>
             <mat-card-title>
-                <h2 style="margin: 0;">Login</h2>
+                <h2 style="margin: 0;">{{ isRegisterMode ? 'Register' : 'Login' }}</h2>
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <form (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
+
+                <ng-container *ngIf="isRegisterMode">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Name</mat-label>
+                        <mat-icon matPrefix>badge</mat-icon>
+                        <input matInput [(ngModel)]="name" name="name" placeholder="Enter your name" required />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Email</mat-label>
+                        <mat-icon matPrefix>mail</mat-icon>
+                        <input matInput [(ngModel)]="mail" name="mail" type="email" placeholder="Enter your email"
+                            required />
+                    </mat-form-field>
+
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                        <mat-icon>home</mat-icon>
+                        <span>Address</span>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-top: 4px;">
+                        <mat-form-field appearance="outline" style="flex: 2;">
+                            <mat-label>Street</mat-label>
+                            <input matInput [(ngModel)]="street" name="street" placeholder="Street name" required />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" style="flex: 1;">
+                            <mat-label>No.</mat-label>
+                            <input matInput [(ngModel)]="streetNumber" name="streetNumber" type="number"
+                                placeholder="Nr." required />
+                        </mat-form-field>
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <mat-form-field appearance="outline" style="flex: 1;">
+                            <mat-label>Postcode</mat-label>
+                            <input matInput [(ngModel)]="postcode" name="postcode" type="number" placeholder="Postcode"
+                                required />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" style="flex: 2;">
+                            <mat-label>City</mat-label>
+                            <input matInput [(ngModel)]="city" name="city" placeholder="City" required />
+                        </mat-form-field>
+                    </div>
+                </ng-container>
+
                 <mat-form-field appearance="outline">
                     <mat-label>Username</mat-label>
-                    <input matInput [(ngModel)]="username" name="username" placeholder="Enter your username" required />
                     <mat-icon matPrefix>person</mat-icon>
+                    <input matInput [(ngModel)]="username" name="username" placeholder="Enter your username" required />
                 </mat-form-field>
-                
+
                 <mat-form-field appearance="outline">
                     <mat-label>Password</mat-label>
-                    <input matInput [(ngModel)]="password" name="password" type="password" placeholder="Enter your password" required />
                     <mat-icon matPrefix>lock</mat-icon>
+                    <input matInput [(ngModel)]="password" name="password" type="password"
+                        placeholder="Enter your password" required />
                 </mat-form-field>
-                
-                <button mat-raised-button color="primary" type="submit" style="margin-top: 8px;">Login</button>
+
+                <button mat-raised-button color="primary" type="submit" style="margin-top: 8px;">
+                    {{ isRegisterMode ? 'Register' : 'Login' }}
+                </button>
+
+                <button mat-button type="button" (click)="switchMode()">
+                    {{ isRegisterMode ? 'Have an account? Log in' : 'Need an account? Register' }}
+                </button>
             </form>
-            <mat-error *ngIf="error" style="margin-top: 16px; text-align: center;">{{ error }}</mat-error>
+
+            <mat-error *ngIf="error" style="margin-top: 16px; text-align: center;">
+                {{ error }}
+            </mat-error>
         </mat-card-content>
     </mat-card>
 </div>

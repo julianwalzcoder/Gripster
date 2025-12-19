@@ -1,0 +1,21 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+.edit-climb-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+    min-height: 80vh;
+    background-color: #f5f5f5;
+}
+
+.edit-climb-card {
+    width: 400px;
+    padding: 1rem;
+    background-color: white;
+}
+
+mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+}

@@ -120,6 +120,43 @@ namespace ClimbingApp.Model.Repositories
             }
         }
 
+        public List<UserSession> GetUserSessionsByGymId(int gymId)
+        {
+            NpgsqlConnection dbConn = null;
+            var userSessions = new List<UserSession>();
+            try
+            {
+                dbConn = new NpgsqlConnection(ConnectionString);
+                var cmd = dbConn.CreateCommand();
+                cmd.CommandText = "SELECT * FROM UserRouteGradeView WHERE gymid = @gymId";
+                cmd.Parameters.Add("@gymId", NpgsqlDbType.Integer).Value = gymId;
+                
+                var data = GetData(dbConn, cmd);
+                if (data != null)
+                {
+                    while (data.Read())
+                    {
+                        userSessions.Add(new UserSession
+                        {
+                            UserID = data["userid"] == DBNull.Value ? null : Convert.ToInt32(data["userid"]),
+                            RouteID = Convert.ToInt32(data["routeid"]),
+                            GradeFbleau = data["gradefbleau"].ToString(),
+                            Status = data["status"].ToString(),
+                            GymID = Convert.ToInt32(data["gymid"]),
+                            SetDate = data["setdate"].ToString(),
+                            RemoveDate = data["removedate"] == DBNull.Value ? null : data["removedate"].ToString(),
+                            AdminID = Convert.ToInt32(data["adminid"])
+                        });
+                    }
+                }
+                return userSessions;
+            }
+            finally
+            {
+                dbConn?.Close();
+            }
+        }
+
         public List<UserSession> GetUserSessionsByUserIdAndRouteId(int userId, int routeId)
         {
             NpgsqlConnection dbConn = null;

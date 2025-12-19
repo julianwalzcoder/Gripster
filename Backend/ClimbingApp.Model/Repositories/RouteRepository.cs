@@ -79,13 +79,16 @@ public class ClimbRepository : BaseRepository
 
     public bool InsertRoute(Climb r)
     {
+        if (r.SetDate == default(DateTime))
+        r.SetDate = DateTime.Today;
+
         NpgsqlConnection dbConn = null;
         try
         {
             dbConn = new NpgsqlConnection(ConnectionString);
             var cmd = dbConn.CreateCommand();
             cmd.CommandText = @"
-insert into ""Route""
+INSERT INTO ""Route""
 (""GymID"", ""GradeID"", ""SetDate"", ""RemoveDate"", ""AdminID"")
 values
 (@gymid, @gradeid, @setdate, @removedate, @adminid)
@@ -110,13 +113,13 @@ values
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
         cmd.CommandText = @"
-update ""Route"" set
+UPDATE ""Route"" set
 ""GymID""=@gymid,
 ""GradeID""=@gradeid,
 ""SetDate""=@setdate,
 ""RemoveDate""=@removedate,
 ""AdminID""=@adminid
-where
+WHERE
 ""ID"" = @id";
         cmd.Parameters.AddWithValue("@gymid", NpgsqlDbType.Integer, r.GymID);
         cmd.Parameters.AddWithValue("@gradeid", NpgsqlDbType.Integer, r.GradeID);
@@ -134,8 +137,8 @@ where
         var dbConn = new NpgsqlConnection(ConnectionString);
         var cmd = dbConn.CreateCommand();
         cmd.CommandText = @"
-delete from ""Route""
-where ""ID"" = @id
+DELETE from ""Route""
+WHERE ""ID"" = @id
 ";
         cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
         

@@ -14,4 +14,5 @@ public class User
     public int Postcode { get; set; }
     public string City { get; set; }
     public string Role { get; set; }
+    public int? AdminId { get; set; }
 }

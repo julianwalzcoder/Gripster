@@ -6,7 +6,7 @@
     </mat-card-title>
     <mat-card-subtitle>{{ climb.setDate }}</mat-card-subtitle>
   </mat-card-header>
-  
+
   <mat-card-content>
     <div class="climb-info">
       <mat-chip-set>
@@ -35,13 +35,15 @@
       </button>
     </div>
   </mat-card-content>
-  
+
   <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="updateClimbStatus(climb.routeId, 'Top'); $event.stopPropagation()">
+    <button mat-raised-button color="primary"
+      (click)="updateClimbStatus(climb.routeId, 'Top'); $event.stopPropagation()">
       <mat-icon>check_circle</mat-icon>
       Top
     </button>
-    <button mat-raised-button color="accent" (click)="updateClimbStatus(climb.routeId, 'Flash'); $event.stopPropagation()">
+    <button mat-raised-button color="accent"
+      (click)="updateClimbStatus(climb.routeId, 'Flash'); $event.stopPropagation()">
       <mat-icon>bolt</mat-icon>
       Flash
     </button>
@@ -53,5 +55,13 @@
       <mat-icon>delete</mat-icon>
       Delete
     </button>
+
+    <!-- admin-only Edit button -->
+    <button *ngIf="authService.isAdmin()" mat-raised-button color="accent"
+      [routerLink]="['/climb', climb.routeId, 'edit']" (click)="$event.stopPropagation()">
+      <mat-icon>edit</mat-icon>
+      Edit
+    </button>
+
   </mat-card-actions>
 </mat-card>

@@ -1,21 +1,18 @@
 <div class="climb-detail-container">
-  
+
   <div *ngIf="loading && !climb" class="loading">
     <mat-spinner></mat-spinner>
     <p>Loading climb details...</p>
   </div>
-  
+
   <mat-card *ngIf="climb" class="climb-detail-card mat-elevation-z4">
     <mat-card-header>
       <mat-card-title>
         <mat-icon>terrain</mat-icon>
         Route #{{ climb.routeId }}
       </mat-card-title>
-      <button mat-icon-button (click)="goBack()" class="back-button">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
     </mat-card-header>
-    
+
     <mat-card-content>
       <div class="climb-info-grid">
         <div class="info-item">
@@ -25,7 +22,7 @@
             <span class="value">{{ climb.grade }}</span>
           </div>
         </div>
-        
+
         <div class="info-item">
           <mat-icon>flag</mat-icon>
           <div>
@@ -35,7 +32,7 @@
             </mat-chip>
           </div>
         </div>
-        
+
         <div class="info-item">
           <mat-icon>fitness_center</mat-icon>
           <div>
@@ -43,7 +40,7 @@
             <span class="value">{{ climb.gymId }}</span>
           </div>
         </div>
-        
+
         <div class="info-item">
           <mat-icon>calendar_today</mat-icon>
           <div>
@@ -51,7 +48,7 @@
             <span class="value">{{ climb.setDate }}</span>
           </div>
         </div>
-        
+
         <div class="info-item" *ngIf="climb.removeDate">
           <mat-icon>event_busy</mat-icon>
           <div>
@@ -59,7 +56,7 @@
             <span class="value">{{ climb.removeDate }}</span>
           </div>
         </div>
-        
+
         <div class="info-item">
           <mat-icon>admin_panel_settings</mat-icon>
           <div>
@@ -67,7 +64,7 @@
             <span class="value">{{ climb.adminId }}</span>
           </div>
         </div>
-        
+
         <div class="info-item" *ngIf="climb.userId">
           <mat-icon>person</mat-icon>
           <div>
@@ -76,8 +73,29 @@
           </div>
         </div>
       </div>
+
+      <div class="rating-section">
+        <div class="avg-rating" *ngIf="avgRating !== undefined; else noAvg">
+          <span class="rating-label">Average Rating:</span>
+          <span class="rating-value">{{ avgRating | number:'1.1-1' }} / 5</span>
+        </div>
+        <ng-template #noAvg>
+          <div class="avg-rating">
+            <span class="rating-label">Average Rating:</span>
+            <span class="rating-value">No ratings yet</span>
+          </div>
+        </ng-template>
+
+        <!-- User Rating: klickbare Sterne -->
+        <div class="user-rating" *ngIf="climb?.userId">
+          <span class="rating-label">Your Rating:</span>
+          <span class="star-container" *ngFor="let s of [1,2,3,4,5]" (click)="rateClimb(s)">
+            <mat-icon [class.filled]="(userRating ?? 0) >= s">star</mat-icon>
+          </span>
+        </div>
+      </div>
     </mat-card-content>
-    
+
     <mat-card-actions>
       <button mat-raised-button color="primary" (click)="updateClimbStatusWithDefault(climb.routeId, 'Top')">
         <mat-icon>check_circle</mat-icon>
@@ -97,7 +115,7 @@
       </button>
     </mat-card-actions>
   </mat-card>
-  
+
   <mat-card *ngIf="error" class="error-card mat-elevation-z2">
     <mat-card-content>
       <mat-icon class="error-icon">error</mat-icon>
