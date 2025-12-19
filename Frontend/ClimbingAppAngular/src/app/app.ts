@@ -8,20 +8,55 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from './services/auth-service';
 import { ClimbService } from './services/climb-service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, ClimbCard, ClimbList, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, CommonModule],
+  standalone: true,
+  imports: [
+    RouterOutlet, RouterLink, ClimbCard, ClimbList,
+    MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, CommonModule
+  ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
-  constructor(public climb: ClimbService, public auth: AuthService, private router: Router) { }
+  popupText: string | null = null;
+
+  constructor(
+    public climb: ClimbService,
+    public auth: AuthService,
+    private router: Router,
+    private location: Location
+  ) { }
+
   logout() {
     this.auth.logout();
     this.router.navigate(['/login']);
   }
-  protected readonly title = signal('ClimbingAppAngular');
 
+  showText(type: string) {
+    if (type === 'terms') {
+      this.popupText = `
+        <h1>Terms of Service</h1>
+        <p>Welcome to Gripster! These terms explain the rules for using our services at Copenhagen Business School (CBS).</p>
+      `;
+    }
+    if (type === 'privacy') {
+      this.popupText = `
+        <h1>Privacy Policy</h1>
+        <p>We value your privacy. This page explains how Gripster collects, stores, and uses your personal data at CBS.</p>
+      `;
+    }
+    if (type === 'eu') {
+      this.popupText = `
+        <h1>EU Legal Information</h1>
+        <p>This section outlines the EU regulations we comply with, including GDPR, when operating at CBS.</p>
+      `;
+    }
+  }
+
+  closePopup() {
+    this.popupText = null;
+  }
 }

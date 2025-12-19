@@ -31,11 +31,22 @@ main {
   flex: 1;
 }
 
-/* footer style */
-footer {
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.85rem;
+/* Footer */
+.app-footer {
+  background-color: #7070D5; 
   color: white;
-  background-color: rgb(112, 112, 212);
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.app-footer a {
+  color: white; /* make links white */
+  text-decoration: none; /* remove underline */
+  margin: 0 4px;
+  transition: opacity 0.2s;
+}
+
+.app-footer a:hover {
+  opacity: 0.8; /* subtle hover effect */
 }

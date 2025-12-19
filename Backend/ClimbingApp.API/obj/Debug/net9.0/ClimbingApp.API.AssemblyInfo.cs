@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClimbingApp.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3a9823438ddc693516e6b4a0aa938293612ca46")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f1c09970243f9712bf9c9bc7377f6fe3b60eba9")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClimbingApp.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClimbingApp.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
